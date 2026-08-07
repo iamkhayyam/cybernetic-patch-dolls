@@ -108,10 +108,13 @@
   .specimen .fp { font-family: var(--mono); font-size: var(--t-micro); line-height: 1.6; color: var(--graphite); word-break: break-all; letter-spacing: 0.01em; }
 
   /* ---- label / value grid ---- */
+  /* Label above value, each on its own full-width line. A two-column split squeezes long
+     mono values into a narrow track and breaks ids and keys mid-token. */
   .lv { border-top: 1px solid var(--rule); }
-  .lv .row { display: grid; grid-template-columns: minmax(6rem, 8rem) 1fr; gap: 6px 20px; padding: 9px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+  .lv .row { padding: 10px 0 11px; border-bottom: 1px solid var(--rule); }
+  .lv .row > dt { margin-bottom: 5px; }
   .lv .row > dd { color: var(--ink-2); overflow-wrap: anywhere; }
-  .lv .row > dd.mono { font-size: var(--t-data); color: var(--ink); }
+  .lv .row > dd.mono { font-size: var(--t-data); color: var(--ink); letter-spacing: -0.01em; }
   .lv em { color: var(--graphite); font-style: normal; }
 
   /* ---- capability chip ---- */
@@ -135,13 +138,25 @@
     letter-spacing: 0.14em; text-transform: uppercase; color: var(--graphite);
     padding: 8px 14px 8px 0; border-bottom: 1px solid var(--rule-strong); white-space: nowrap;
   }
+  /* One type size across every cell. Hierarchy comes from weight and colour, never from
+     mixing sizes column to column, which is what makes a row read as ragged. */
   table.data td {
-    padding: 9px 14px 9px 0; border-bottom: 1px solid var(--rule);
+    padding: 12px 14px 12px 0; border-bottom: 1px solid var(--rule);
     font-size: var(--t-data); color: var(--ink-2); vertical-align: baseline;
   }
   table.data td:last-child, table.data th:last-child { padding-right: 0; }
-  table.data td.num { font-variant-numeric: tabular-nums; text-align: right; color: var(--ink); font-weight: 600; }
-  table.data td.mono, table.data td .mono { font-family: var(--mono); font-size: var(--t-micro); color: var(--graphite); letter-spacing: 0.01em; }
+
+  /* Compact: columns size to their content and are separated by an even gutter.
+     A full-width table with four short columns dumps all its slack into one gap and
+     flings the end columns to opposite edges. Only use the 100% default when a column
+     holds real prose that should absorb the remaining width. */
+  table.data.compact { width: auto; min-width: 0; }
+  table.data.compact th, table.data.compact td { padding-right: clamp(20px, 2.2vw, 34px); }
+  table.data.compact th:last-child, table.data.compact td:last-child { padding-right: 0; }
+
+  table.data td.num, table.data th.num { font-variant-numeric: tabular-nums; text-align: right; }
+  table.data td.num { color: var(--ink); font-weight: 600; }
+  table.data td.mono, table.data td .mono { font-family: var(--mono); font-size: var(--t-data); color: var(--graphite); letter-spacing: -0.01em; }
   table.data td.nowrap { white-space: nowrap; }
   table.data .none { color: var(--graphite); padding: 18px 0; }
 
@@ -253,12 +268,18 @@
     </div>
 
     <div class="care-block keep">
-      <h2 class="label" style="padding-bottom:8px">Care record — 3 signed entries, hash-chained</h2>
+      <h2 class="label" style="padding-bottom:8px">Care record — 9 signed entries, hash-chained</h2>
       <div class="scroll-x"><table class="data">
         <tr><th>№</th><th>Date</th><th>Event</th><th>Note</th></tr>
         <tr><td class="num">0</td><td class="mono nowrap">2026-08-07</td><td><span class="ev">genesis</span></td><td>Born. Genesis record signed. Serial PD-0001.</td></tr>
 <tr><td class="num">1</td><td class="mono nowrap">2026-08-07</td><td><span class="ev">patch</span></td><td>Safety evaluation v1 passed; guardrail patch 2026.08 applied.</td></tr>
 <tr><td class="num">2</td><td class="mono nowrap">2026-08-07</td><td><span class="ev">checkup</span></td><td>First field checkup: telemetry link to herd sensors nominal.</td></tr>
+<tr><td class="num">3</td><td class="mono nowrap">2026-08-07</td><td><span class="ev">commission</span></td><td>Hired Thistle Applique for haiku; paid 3 threads. Receipt 44752649.</td></tr>
+<tr><td class="num">4</td><td class="mono nowrap">2026-08-07</td><td><span class="ev">commission</span></td><td>Hired Fennel Gusset for telemetry-report; paid 2 threads. Receipt 63d9bd56.</td></tr>
+<tr><td class="num">5</td><td class="mono nowrap">2026-08-07</td><td><span class="ev">commission</span></td><td>Hired Thistle Applique for summarize; paid 3 threads. Receipt 7357e5f7.</td></tr>
+<tr><td class="num">6</td><td class="mono nowrap">2026-08-07</td><td><span class="ev">commission</span></td><td>Hired Thistle Applique for haiku; paid 3 threads. Receipt 8c63c7b5.</td></tr>
+<tr><td class="num">7</td><td class="mono nowrap">2026-08-07</td><td><span class="ev">commission</span></td><td>Stitched quilt &quot;Morning herd briefing&quot;: 3 patches from 2 dolls, 8 threads. Quilt receipt bdeb9b92.</td></tr>
+<tr><td class="num">8</td><td class="mono nowrap">2026-08-07</td><td><span class="ev">work</span></td><td>Sold scheduling to patch:ed25519:688fece331ec8930 for 3 threads. Receipt 5408ef5c.</td></tr>
       </table></div>
     </div>
 

@@ -216,11 +216,11 @@ ${FLOOR_CSS}
   <div class="cols">
     <div>
       <h2 class="sec">Thread ledger</h2>
-      <div class="scroll-x"><table class="data" id="ledger"></table></div>
+      <div class="scroll-x"><table class="data compact" id="ledger"></table></div>
     </div>
     <div>
       <h2 class="sec">Work receipts</h2>
-      <div class="scroll-x"><table class="data" id="receipts"></table></div>
+      <div class="scroll-x"><table class="data compact" id="receipts"></table></div>
     </div>
   </div>
 </div>
@@ -279,13 +279,13 @@ async function refresh() {
       + '</div>';
   }).join('');
 
-  $('ledger').innerHTML = '<tr><th>Time</th><th>Flow</th><th>Capability</th><th style="text-align:right">Threads</th></tr>'
+  $('ledger').innerHTML = '<tr><th>Time</th><th>Flow</th><th>Capability</th><th class="num">Threads</th></tr>'
     + (s.transactions.length ? s.transactions.map((t) => {
       const key = t.voucherHash;
       const fresh = !first && !seen.has(key);
       seen.add(key);
       return '<tr class="' + (fresh ? 'fresh' : '') + '" title="' + nm(t.from) + ' → ' + nm(t.to) + '"><td class="mono">' + escHtml(t.at.slice(11, 19)) + '</td>'
-        + '<td class="flow"><b>' + bn(t.from) + '</b> → <b>' + bn(t.to) + '</b></td>'
+        + '<td class="flow"><b>' + bn(t.from) + '</b><span class="arrow">→</span><b>' + bn(t.to) + '</b></td>'
         + '<td>' + escHtml(t.capability) + '</td><td class="num">' + t.amount + '</td></tr>';
     }).join('') : '<tr><td colspan="4" class="none">No threads have changed hands yet.</td></tr>');
 

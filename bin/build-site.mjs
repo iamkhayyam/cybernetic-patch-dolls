@@ -7,6 +7,7 @@
 // snapshot of the coordination floor. Reads only public records — never private keys.
 
 import { mkdirSync, writeFileSync, readFileSync, existsSync, rmSync, cpSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
 import {
   ROOT,
@@ -191,7 +192,7 @@ function floor() {
   const rc = (hub.receipts ?? []).slice(-24).reverse();
   const ledger = tx.length ? tx.map((t) => `<tr>
       <td class="mono nowrap">${esc(t.at.slice(11, 19))}</td>
-      <td class="flow"><b>${bn(t.from)}</b> → <b>${bn(t.to)}</b></td>
+      <td class="flow"><b>${bn(t.from)}</b><span class="arrow">→</span><b>${bn(t.to)}</b></td>
       <td>${esc(t.capability)}</td><td class="num">${t.amount}</td></tr>`).join('')
     : '<tr><td colspan="4" class="none">No threads changed hands in this snapshot.</td></tr>';
   const receipts = rc.length ? rc.map((r) => {
@@ -234,14 +235,14 @@ ${masthead('Coordination floor', 'The Quilting Bee')}
   <div class="cols">
     <div>
       <h2 class="sec">Thread ledger</h2>
-      <div class="scroll-x"><table class="data">
-        <tr><th>Time</th><th>Flow</th><th>Capability</th><th style="text-align:right">Threads</th></tr>
+      <div class="scroll-x"><table class="data compact">
+        <tr><th>Time</th><th>Flow</th><th>Capability</th><th class="num">Threads</th></tr>
         ${ledger}
       </table></div>
     </div>
     <div>
       <h2 class="sec">Work receipts</h2>
-      <div class="scroll-x"><table class="data">
+      <div class="scroll-x"><table class="data compact">
         <tr><th>Time</th><th>Signed by</th><th>For</th><th>Signature</th></tr>
         ${receipts}
       </table></div>
@@ -293,6 +294,13 @@ writeFileSync(join(DIST, 'index.html'), landing());
 writeFileSync(join(DIST, '404.html'), notFound());
 mkdirSync(join(DIST, 'bee'), { recursive: true });
 writeFileSync(join(DIST, 'bee', 'index.html'), floor());
+
+// Work sold through the floor appends care entries without re-rendering the certificate,
+// so reissue every one before publishing. Otherwise a certificate silently under-reports
+// its own doll's history.
+for (const { slug } of dolls) {
+  execFileSync(process.execPath, [join(ROOT, 'bin', 'patchdoll.mjs'), 'reissue', slug], { cwd: ROOT, stdio: 'pipe' });
+}
 
 for (const { slug, dir } of dolls) {
   const out = join(DIST, 'd', slug);

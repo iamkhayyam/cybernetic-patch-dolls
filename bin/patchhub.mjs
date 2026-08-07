@@ -216,11 +216,17 @@ ${FLOOR_CSS}
   <div class="cols">
     <div>
       <h2 class="sec">Thread ledger</h2>
-      <div class="scroll-x"><table class="data compact" id="ledger"></table></div>
+      <div class="log">
+        <div class="head"><span>Time</span><span>Flow</span><span>Amount</span></div>
+        <div id="ledger"></div>
+      </div>
     </div>
     <div>
       <h2 class="sec">Work receipts</h2>
-      <div class="scroll-x"><table class="data compact" id="receipts"></table></div>
+      <div class="log">
+        <div class="head"><span>Time</span><span>Signed by</span><span>Signature</span></div>
+        <div id="receipts"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -279,26 +285,26 @@ async function refresh() {
       + '</div>';
   }).join('');
 
-  $('ledger').innerHTML = '<tr><th>Time</th><th>Flow</th><th>Capability</th><th class="num">Threads</th></tr>'
-    + (s.transactions.length ? s.transactions.map((t) => {
+  $('ledger').innerHTML = s.transactions.length ? s.transactions.map((t) => {
       const key = t.voucherHash;
       const fresh = !first && !seen.has(key);
       seen.add(key);
-      return '<tr class="' + (fresh ? 'fresh' : '') + '" title="' + nm(t.from) + ' → ' + nm(t.to) + '"><td class="mono">' + escHtml(t.at.slice(11, 19)) + '</td>'
-        + '<td class="flow"><b>' + bn(t.from) + '</b><span class="arrow">→</span><b>' + bn(t.to) + '</b></td>'
-        + '<td>' + escHtml(t.capability) + '</td><td class="num">' + t.amount + '</td></tr>';
-    }).join('') : '<tr><td colspan="4" class="none">No threads have changed hands yet.</td></tr>');
+      return '<div class="row ' + (fresh ? 'fresh' : '') + '" title="' + nm(t.from) + ' → ' + nm(t.to) + '">'
+        + '<span class="t">' + escHtml(t.at.slice(11, 19)) + '</span>'
+        + '<span class="body"><b>' + bn(t.from) + '</b><span class="arrow">→</span><b>' + bn(t.to) + '</b><span class="sep">·</span>' + escHtml(t.capability) + '</span>'
+        + '<span class="amt n">' + t.amount + 't</span></div>';
+    }).join('') : '<div class="empty">No threads have changed hands yet.</div>';
 
-  $('receipts').innerHTML = '<tr><th>Time</th><th>Signed by</th><th>For</th><th>Signature</th></tr>'
-    + (s.receipts.length ? s.receipts.map((r) => {
+  $('receipts').innerHTML = s.receipts.length ? s.receipts.map((r) => {
       const b = r.receipt?.body ?? {};
-      const what = r.kind === 'quilt'
-        ? escHtml(b.job ?? 'quilt') + ' <span style="color:var(--graphite)">· ' + (b.patches?.length ?? 0) + ' patches</span>'
-        : escHtml(b.capability ?? '') + ' <span style="color:var(--graphite)">· for ' + (b.client ? bn(b.client) : '—') + '</span>';
-      return '<tr><td class="mono">' + escHtml(r.at.slice(11, 19)) + '</td>'
-        + '<td>' + bn(b.worker ?? b.stitchedBy) + '</td><td>' + what + '</td>'
-        + '<td class="mono">' + escHtml((r.receipt?.sig || '').slice(0, 10)) + '</td></tr>';
-    }).join('') : '<tr><td colspan="4" class="none">No work has been receipted yet.</td></tr>');
+      const body = r.kind === 'quilt'
+        ? '<b>' + bn(b.stitchedBy) + '</b><span class="sep">·</span>stitched <b>' + escHtml(b.job ?? 'quilt') + '</b> from ' + (b.patches?.length ?? 0) + ' patches'
+        : '<b>' + bn(b.worker) + '</b><span class="sep">·</span>' + escHtml(b.capability ?? '') + ' for <b>' + (b.client ? bn(b.client) : '—') + '</b>';
+      return '<div class="row">'
+        + '<span class="t">' + escHtml(r.at.slice(11, 19)) + '</span>'
+        + '<span class="body">' + body + '</span>'
+        + '<span class="amt sig">' + escHtml((r.receipt?.sig || '').slice(0, 10)) + '</span></div>';
+    }).join('') : '<div class="empty">No work has been receipted yet.</div>';
 
   first = false;
 }

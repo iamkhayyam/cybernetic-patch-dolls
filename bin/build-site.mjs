@@ -90,7 +90,7 @@ function landing() {
     const r = genesis.record;
     const fp = r.identity.fingerprint.replace('sha256:', '');
     return `<a class="entry" href="/d/${esc(slug)}/">
-      <div class="mount">${quiltSvg(fp, 132)}</div>
+      <div class="mount">${quiltSvg(fp, 104)}</div>
       <div class="body">
         <div class="kicker">${esc(r.serial)} · ${esc(r.role || 'Companion agent')}</div>
         <h3>${esc(r.name)}</h3>
@@ -106,15 +106,50 @@ function landing() {
 
   const totalEntries = dolls.reduce((s, d) => s + d.care.entries.length, 0);
 
+  // The wordless hero story: a cryptographic seed → a quilt weaves itself → the doll's
+  // identity is signed. Every visual element is derived from the fingerprint; the animation
+  // is literally what the product does, made visible.
+  const loomQuilts = dolls.map(({ genesis }, i) => {
+    const fp = genesis.record.identity.fingerprint.replace('sha256:', '');
+    return `<div class="pane" data-i="${i}" data-fp="${esc(fp.slice(0, 16))}" data-name="${esc(genesis.record.name)}" data-serial="${esc(genesis.record.serial)}">${quiltSvg(fp, 340, { animated: true })}</div>`;
+  }).join('');
+
   return `${head('The Cybernetic Patch Dolls', 'Phygital companions for the agentic age. Physical dolls that anchor cryptographically verifiable AI agent identities.')}
 <style>
 ${BASE_CSS}
 ${FLOOR_CSS}
 ${SITE_CSS}
-  .hero { padding: clamp(48px, 9vw, 104px) 0 clamp(48px, 7vw, 88px); border-bottom: 2px solid var(--ink); }
-  .hero .kicker { font-size: var(--t-label); font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--stamp-ink); margin-bottom: 18px; }
+  .hero { padding: clamp(48px, 9vw, 104px) 0 clamp(48px, 7vw, 88px); border-bottom: 2px solid var(--ink); display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 96px); align-items: center; }
+  .hero .say .kicker { font-size: var(--t-label); font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--stamp-ink); margin-bottom: 18px; }
   .hero h1 { font-size: clamp(2.2rem, 6.4vw, 4.5rem); font-weight: 800; letter-spacing: -0.035em; line-height: 0.98; max-width: 17ch; text-wrap: balance; }
   .hero p { margin-top: 24px; max-width: 60ch; font-size: var(--t-lead); color: var(--ink-2); }
+  @media (max-width: 860px) { .hero { grid-template-columns: 1fr; } .hero .loom { max-width: 420px; } }
+
+  /* The loom: the empty space is the story. A fingerprint arrives, a quilt weaves itself
+     from it, a signed stamp lands, the next agent takes its place. No words, no chrome —
+     just the core mechanic playing on a loop. Deterministic, real dolls, real keys. */
+  .loom { position: relative; aspect-ratio: 1; width: 100%; max-width: 460px; justify-self: end; }
+  .loom .frame { position: absolute; inset: 0; border: 1px solid var(--rule-strong); padding: clamp(14px, 2vw, 22px); background: var(--plate); display: grid; grid-template-rows: auto 1fr auto; gap: clamp(10px, 1.5vw, 16px); }
+  .loom .fp { font-family: var(--mono); font-size: var(--t-micro); color: var(--graphite); letter-spacing: -0.005em; min-height: 1.4em; }
+  .loom .fp b { color: var(--ink); font-weight: 500; }
+  .loom .stage { position: relative; }
+  .loom .pane { position: absolute; inset: 0; opacity: 0; transition: opacity 400ms var(--ease); pointer-events: none; }
+  .loom .pane svg { width: 100%; height: 100%; display: block; }
+  .loom .pane.on { opacity: 1; }
+  .loom .patch { opacity: 0; }
+  .loom .pane.on .patch { animation: patch-in 380ms var(--ease) forwards; animation-delay: calc(var(--i, 0) * 55ms + 120ms); }
+  @keyframes patch-in { from { opacity: 0 } to { opacity: 1 } }
+  .loom .foot { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; font-size: var(--t-micro); font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--graphite); min-height: 1.4em; }
+  .loom .foot .name { color: var(--ink); }
+  .loom .stamp { display: inline-flex; align-items: center; gap: 6px; color: var(--stamp-ink); opacity: 0; transform: translateY(3px); transition: opacity 260ms var(--ease), transform 260ms var(--ease); }
+  .loom .stamp::before { content: ''; width: 6px; height: 6px; background: var(--stamp); }
+  .loom .pane.on ~ .foot .stamp, .loom .pane.on + .foot .stamp { opacity: 1; transform: translateY(0); }
+  .loom.signed .stamp { opacity: 1; transform: translateY(0); }
+  @media (prefers-reduced-motion: reduce) {
+    .loom .pane { transition: none; }
+    .loom .patch { opacity: 1; animation: none; }
+    .loom .stamp { opacity: 1; transform: none; transition: none; }
+  }
 
   /* Landing sections use display-scale heads, not the dashboard's 11px silkscreen labels.
      Weight and size do the anchoring; a small caption sits underneath as context. */
@@ -125,18 +160,18 @@ ${SITE_CSS}
   /* Registry entries: bigger quilts (they encode identity — they earn the space),
      display-scale name, room to read the fingerprint intact, and a clear CTA. */
   .collection { border-top: 2px solid var(--ink); }
-  .entry { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: clamp(24px, 4vw, 44px); align-items: center; padding: clamp(24px, 3vw, 32px) clamp(12px, 2vw, 24px) clamp(24px, 3vw, 32px) 0; border-bottom: 1px solid var(--rule); text-decoration: none; color: inherit; transition: background 140ms var(--ease); }
+  .entry { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: clamp(20px, 3vw, 36px); align-items: center; padding: 20px clamp(12px, 2vw, 24px) 20px 0; border-bottom: 1px solid var(--rule); text-decoration: none; color: inherit; transition: background 140ms var(--ease); }
   .entry:hover, .entry:focus-visible { background: var(--plate); outline: none; }
   .entry .mount { border: 1px solid var(--rule-strong); padding: 6px; background: var(--plate); line-height: 0; align-self: start; }
   .entry .kicker { font-size: var(--t-label); font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--stamp-ink); margin-bottom: 8px; }
-  .entry h3 { font-size: clamp(1.6rem, 3vw, 2.15rem); font-weight: 700; letter-spacing: -0.025em; line-height: 1.05; }
+  .entry h3 { font-size: clamp(1.4rem, 2.4vw, 1.75rem); font-weight: 700; letter-spacing: -0.025em; line-height: 1.05; }
   .entry .fp { margin-top: 12px; font-size: var(--t-micro); color: var(--graphite); letter-spacing: -0.005em; word-break: break-all; }
   .entry .fp .tail { color: var(--rule-strong); }
   .entry .caps { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 14px; }
   .entry .go { text-align: right; }
-  .entry .n { font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1; font-variant-numeric: tabular-nums; }
-  .entry .n span { display: block; font-size: var(--t-micro); font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--graphite); margin-top: 6px; }
-  .entry .cta { margin-top: 20px; font-size: var(--t-label); font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--stamp-ink); }
+  .entry .n { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1; font-variant-numeric: tabular-nums; }
+  .entry .n span { display: block; font-size: var(--t-micro); font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--graphite); margin-top: 5px; }
+  .entry .cta { margin-top: 14px; font-size: var(--t-micro); font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--stamp-ink); }
   .entry .cta span { display: inline-block; transition: transform 140ms var(--ease); }
   .entry:hover .cta span { transform: translateX(4px); }
   @media (max-width: 720px) {
@@ -161,11 +196,23 @@ ${masthead('Public registry', 'iamkhayyam')}
 <div class="wrap">
   ${marks()}
   <div class="hero">
-    <div class="kicker">Phygital companions for the agentic age</div>
-    <h1>Every agent has a body, a birth certificate, and a life story.</h1>
-    <p>An agent identity that cannot transact is a business card. An agent that transacts
-    without identity is a liability. The Cybernetic Patch Dolls binds the two: the key that
-    signs a doll's birth certificate also signs its payment vouchers and its work receipts.</p>
+    <div class="say">
+      <div class="kicker">Phygital companions for the agentic age</div>
+      <h1>Every agent has a body, a birth certificate, and a life story.</h1>
+      <p>An agent identity that cannot transact is a business card. An agent that transacts
+      without identity is a liability. The Cybernetic Patch Dolls binds the two: the key that
+      signs a doll's birth certificate also signs its payment vouchers and its work receipts.</p>
+    </div>
+    <div class="loom" aria-hidden="true">
+      <div class="frame">
+        <div class="fp mono"><b>sha256</b> <span id="loom-fp"></span></div>
+        <div class="stage">${loomQuilts}</div>
+        <div class="foot">
+          <span class="name" id="loom-name"></span>
+          <span class="stamp" id="loom-stamp">Signed</span>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="sect">
@@ -207,6 +254,32 @@ ${masthead('Public registry', 'iamkhayyam')}
     <li><p>The worker does the job and returns a <b>receipt</b> it signed, binding worker, client, input hash, and result hash.</p></li>
     <li><p>Multi-agent jobs stitch those receipts into a <b>quilt</b>: an auditable provenance graph for work that crossed several agents.</p></li>
   </ol>
+  <script>
+    // Drive the loom: cycle through the real dolls, weaving each quilt from its own key.
+    (() => {
+      const panes = document.querySelectorAll('.loom .pane');
+      if (!panes.length) return;
+      const fpEl = document.getElementById('loom-fp');
+      const nameEl = document.getElementById('loom-name');
+      const stampEl = document.getElementById('loom-stamp');
+      let i = 0;
+      const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const advance = () => {
+        panes.forEach((p, n) => p.classList.toggle('on', n === i));
+        const p = panes[i];
+        fpEl.textContent = p.dataset.fp + '…';
+        nameEl.textContent = p.dataset.serial + ' · ' + p.dataset.name;
+        stampEl.style.opacity = '0';
+        stampEl.style.transform = 'translateY(3px)';
+        const showStamp = () => { stampEl.style.opacity = '1'; stampEl.style.transform = 'translateY(0)'; };
+        // Reveal stamp after the last patch lands (10 * 55ms stagger + 380ms fade).
+        setTimeout(showStamp, reduced ? 0 : 1100);
+        i = (i + 1) % panes.length;
+      };
+      advance();
+      setInterval(advance, 4200);
+    })();
+  </script>
 </div>
 ${siteFooter()}
 `;
@@ -220,11 +293,12 @@ function floor() {
     const r = genesis.record;
     const fp = r.identity.fingerprint.replace('sha256:', '');
     const sold = care.entries.filter((e) => e.body.type === 'work').length;
+    const soldLabel = `${sold} ${sold === 1 ? 'job' : 'jobs'} sold`;
     return `<a class="plain reg-row" href="/d/${esc(slug)}/">
       <div class="mount">${quiltSvg(fp, 72)}</div>
       <div><h3>${esc(r.name)}</h3>
         <div class="meta">${esc(r.serial)} · ${esc(fp.slice(0, 10))}</div>
-        <div class="state"><span class="dot"></span>${sold} jobs sold</div>
+        <div class="state"><span class="dot"></span>${soldLabel}</div>
       </div>
       <div class="chips">${r.capabilities.map((c) => `<span class="chip">${esc(c)}</span>`).join('')}</div>
       <div class="bal"><div class="n">${hub.balances?.[r.identity.id] ?? '—'}</div><div class="u">threads</div></div>
@@ -233,20 +307,21 @@ function floor() {
 
   const tx = (hub.transactions ?? []).slice(-24).reverse();
   const rc = (hub.receipts ?? []).slice(-24).reverse();
-  const ledger = tx.length ? tx.map((t) => `<tr>
-      <td class="mono nowrap">${esc(t.at.slice(11, 19))}</td>
-      <td class="flow"><b>${bn(t.from)}</b><span class="arrow">→</span><b>${bn(t.to)}</b></td>
-      <td>${esc(t.capability)}</td><td class="num">${t.amount}</td></tr>`).join('')
-    : '<tr><td colspan="4" class="none">No threads changed hands in this snapshot.</td></tr>';
+  const ledger = tx.length ? tx.map((t) => `<div class="row">
+      <span class="t">${esc(t.at.slice(11, 19))}</span>
+      <span class="body"><b>${bn(t.from)}</b><span class="arrow">→</span><b>${bn(t.to)}</b><span class="sep">·</span>${esc(t.capability)}</span>
+      <span class="amt n">${t.amount}t</span></div>`).join('')
+    : '<div class="empty">No threads changed hands in this snapshot.</div>';
   const receipts = rc.length ? rc.map((r) => {
     const b = r.receipt?.body ?? {};
-    const what = r.kind === 'quilt'
-      ? `${esc(b.job ?? 'quilt')} <span style="color:var(--graphite)">· ${b.patches?.length ?? 0} patches</span>`
-      : `${esc(b.capability ?? '')} <span style="color:var(--graphite)">· for ${b.client ? bn(b.client) : '—'}</span>`;
-    return `<tr><td class="mono nowrap">${esc(r.at.slice(11, 19))}</td>
-      <td>${bn(b.worker ?? b.stitchedBy)}</td><td>${what}</td>
-      <td class="mono">${esc((r.receipt?.sig || '').slice(0, 10))}</td></tr>`;
-  }).join('') : '<tr><td colspan="4" class="none">No work was receipted in this snapshot.</td></tr>';
+    const body = r.kind === 'quilt'
+      ? `<b>${bn(b.stitchedBy)}</b><span class="sep">·</span>stitched <b>${esc(b.job ?? 'quilt')}</b> from ${b.patches?.length ?? 0} patches`
+      : `<b>${bn(b.worker)}</b><span class="sep">·</span>${esc(b.capability ?? '')} for <b>${b.client ? bn(b.client) : '—'}</b>`;
+    return `<div class="row">
+      <span class="t">${esc(r.at.slice(11, 19))}</span>
+      <span class="body">${body}</span>
+      <span class="amt sig">${esc((r.receipt?.sig || '').slice(0, 10))}</span></div>`;
+  }).join('') : '<div class="empty">No work was receipted in this snapshot.</div>';
 
   const threads = (hub.transactions ?? []).reduce((s, t) => s + t.amount, 0);
 
@@ -278,17 +353,17 @@ ${masthead('Coordination floor', 'The Quilting Bee')}
   <div class="cols">
     <div>
       <h2 class="sec">Thread ledger</h2>
-      <div class="scroll-x"><table class="data compact">
-        <tr><th>Time</th><th>Flow</th><th>Capability</th><th class="num">Threads</th></tr>
+      <div class="log">
+        <div class="head"><span>Time</span><span>Flow</span><span>Amount</span></div>
         ${ledger}
-      </table></div>
+      </div>
     </div>
     <div>
       <h2 class="sec">Work receipts</h2>
-      <div class="scroll-x"><table class="data compact">
-        <tr><th>Time</th><th>Signed by</th><th>For</th><th>Signature</th></tr>
+      <div class="log">
+        <div class="head"><span>Time</span><span>Signed by</span><span>Signature</span></div>
         ${receipts}
-      </table></div>
+      </div>
     </div>
   </div>
 </div>

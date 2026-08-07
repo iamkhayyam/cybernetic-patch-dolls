@@ -233,16 +233,12 @@ ${SITE_CSS}
     .position .a .then::before { content: 'With a Patch Doll: '; color: var(--stamp-ink); font-weight: 600; }
   }
 
-  /* Wedges: three cases side by side, each with a stamp-ink kicker, a claim in display
-     scale, and a paragraph. Separated by vertical rules on wide screens, horizontals when
-     they stack. */
-  .wedges { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); border-top: 2px solid var(--ink); }
-  .wedges .case { padding: 30px clamp(24px, 3vw, 40px) 36px 0; border-bottom: 1px solid var(--rule); border-right: 1px solid var(--rule); }
-  .wedges .case:last-child { border-right: none; padding-right: 0; }
-  .wedges .case { padding-left: clamp(0px, 3vw, 40px); }
-  .wedges .case:first-child { padding-left: 0; }
-  .wedges .kicker { font-size: var(--t-micro); font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--stamp-ink); margin-bottom: 14px; }
-  .wedges .claim { font-size: clamp(1.15rem, 1.7vw, 1.4rem); font-weight: 700; letter-spacing: -0.015em; line-height: 1.15; margin-bottom: 14px; text-wrap: balance; }
+  /* Wedges: three cases separated by the same 1px-gap-on-rule-bg technique as .surfaces,
+     so every cell has identical padding regardless of position. */
+  .wedges { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 1px; background: var(--rule); border-top: 2px solid var(--ink); border-bottom: 1px solid var(--rule); }
+  .wedges .case { padding: clamp(28px, 3vw, 40px) clamp(24px, 3vw, 36px) clamp(32px, 3.5vw, 44px); background: var(--field); }
+  .wedges .kicker { font-size: var(--t-micro); font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--stamp-ink); margin-bottom: 16px; }
+  .wedges .claim { font-size: clamp(1.15rem, 1.7vw, 1.4rem); font-weight: 700; letter-spacing: -0.015em; line-height: 1.2; margin-bottom: 14px; text-wrap: balance; }
   .wedges .body { color: var(--ink-2); max-width: 42ch; }
 
   /* Moat: one full-width statement in near-display scale, then a signed timeline that shows
@@ -251,25 +247,27 @@ ${SITE_CSS}
   .moat p.lede { font-size: clamp(1.3rem, 2.2vw, 1.7rem); font-weight: 500; line-height: 1.25; letter-spacing: -0.015em; color: var(--ink); max-width: 62ch; text-wrap: balance; }
   .moat p.lede em { color: var(--stamp-ink); font-style: normal; }
   .moat p.follow { margin-top: 24px; color: var(--ink-2); max-width: 62ch; font-size: var(--t-lead); }
+  /* Timeline: the "when" label is 5–6 characters. Give it exactly the space it needs and
+     let the sentence sit right next to it, not stranded 160px away. */
   .moat .timeline { margin-top: 40px; border-top: 1px solid var(--rule); }
-  .moat .step { display: grid; grid-template-columns: minmax(0, 10rem) 1fr; gap: clamp(20px, 3vw, 40px); padding: 16px 4px; border-bottom: 1px solid var(--rule); align-items: baseline; }
-  .moat .step .when { font-family: var(--mono); font-size: var(--t-data); color: var(--stamp-ink); letter-spacing: -0.005em; }
-  .moat .step .what { color: var(--ink-2); }
+  .moat .step { display: flex; align-items: baseline; gap: clamp(20px, 3vw, 32px); padding: 18px 4px; border-bottom: 1px solid var(--rule); }
+  .moat .step .when { flex: 0 0 auto; min-width: 4.5rem; font-family: var(--mono); font-size: var(--t-data); color: var(--stamp-ink); letter-spacing: -0.005em; font-variant-numeric: tabular-nums; }
+  .moat .step .what { flex: 1 1 0; min-width: 0; color: var(--ink-2); font-size: var(--t-lead); }
   .moat .step .what b { color: var(--ink); font-weight: 600; }
 
-  /* Platform surfaces: 2×2 grid of what is built and what is next. Status is a compact pill
-     in the top-left; live surfaces link out. */
-  .surfaces { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); border-top: 2px solid var(--ink); }
-  .surfaces .surface { padding: 26px 24px 30px 0; border-bottom: 1px solid var(--rule); border-right: 1px solid var(--rule); text-decoration: none; color: inherit; display: block; transition: background 140ms var(--ease); }
-  .surfaces .surface:nth-child(2n) { border-right: none; padding-right: 0; padding-left: clamp(0px, 3vw, 40px); }
-  @media (min-width: 720px) { .surfaces .surface:nth-child(-n+2) { border-bottom: 1px solid var(--rule-strong); } }
+  /* Platform surfaces. Rules-between-cells done with a 1px grid gap on a rule-coloured
+     container, so every cell has identical internal padding and there is no odd/even
+     asymmetry. Status pill: filled square for LIVE, hollow square for ON DECK — the same
+     shape carrying two different states, not two different colour weights. */
+  .surfaces { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 1px; background: var(--rule); border-top: 2px solid var(--ink); border-bottom: 1px solid var(--rule); }
+  .surfaces .surface { padding: clamp(28px, 3vw, 40px) clamp(24px, 3vw, 36px) clamp(30px, 3.5vw, 42px); background: var(--field); text-decoration: none; color: inherit; display: block; transition: background 140ms var(--ease); }
   .surfaces a.surface:hover { background: var(--plate); }
-  .surfaces .status { display: inline-flex; align-items: center; gap: 6px; font-size: var(--t-micro); font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--graphite); margin-bottom: 16px; }
-  .surfaces .status::before { content: ''; width: 6px; height: 6px; background: var(--rule-strong); }
+  .surfaces .status { display: inline-flex; align-items: center; gap: 8px; font-size: var(--t-micro); font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2); margin-bottom: 20px; }
+  .surfaces .status::before { content: ''; width: 8px; height: 8px; background: transparent; border: 1.5px solid var(--rule-strong); box-sizing: border-box; }
   .surfaces .status.live { color: var(--stamp-ink); }
-  .surfaces .status.live::before { background: var(--stamp); }
-  .surfaces h3 { font-size: clamp(1.3rem, 2vw, 1.55rem); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 10px; }
-  .surfaces h3 .arrow { color: var(--stamp-ink); display: inline-block; margin-left: 6px; transition: transform 140ms var(--ease); }
+  .surfaces .status.live::before { background: var(--stamp); border-color: var(--stamp); }
+  .surfaces h3 { font-size: clamp(1.3rem, 2vw, 1.55rem); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 12px; }
+  .surfaces h3 .arrow { color: var(--stamp-ink); display: inline-block; margin-left: 8px; transition: transform 140ms var(--ease); }
   .surfaces a.surface:hover h3 .arrow { transform: translateX(4px); }
   .surfaces p { color: var(--ink-2); max-width: 46ch; }
 

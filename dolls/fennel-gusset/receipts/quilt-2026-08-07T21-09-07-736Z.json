@@ -1,0 +1,23 @@
+{
+  "body": {
+    "spec": "patchdoll/quilt-receipt/v0",
+    "job": "Evening pasture note",
+    "stitchedBy": "patch:ed25519:688fece331ec8930",
+    "patches": [
+      {
+        "capability": "scheduling",
+        "worker": "patch:ed25519:694fc75304e0ae35",
+        "paid": 3,
+        "receiptHash": "5408ef5c36f01cfdf6d2289f7dd9d3a10028f4e67abacf854659d720b90125e2"
+      },
+      {
+        "capability": "haiku",
+        "worker": "patch:ed25519:68e9f5eeef80fa51",
+        "paid": 3,
+        "receiptHash": "1046d0839b02a1b13ea93061f183b644e134ae2b7776f2fb8a19727792660fe6"
+      }
+    ],
+    "at": "2026-08-07T21:09:07.736Z"
+  },
+  "sig": "RyjaU3BtODpaglqikGAdmNZ9jxBwjRYHiw0Rb5WxiZdMMIFhkGLcQqXc19ZJlJH2YtmAlGMY3vzYTyWUCmbbBQ=="
+}

@@ -1,0 +1,86 @@
+{
+  "spec": "patchdoll/care/v0",
+  "doll": "patch:ed25519:688fece331ec8930",
+  "entries": [
+    {
+      "body": {
+        "seq": 0,
+        "at": "2026-08-07T21:09:06.450Z",
+        "type": "genesis",
+        "note": "Born. Genesis record signed. Serial PD-0003.",
+        "prev": "5563d18b5ff8a52ef805f7740eb7f73c096f64d30d439731109d913b26d80823"
+      },
+      "sig": "mhPeG5GGocOKUm8LtjhAuoYR7bi7MdpLFKQeD/8pjuHWE8KG6OHpNVQwVggKYtTMj7bk80QGoNqeDzqCkz9XCQ=="
+    },
+    {
+      "body": {
+        "seq": 1,
+        "at": "2026-08-07T21:09:06.618Z",
+        "type": "checkup",
+        "note": "Calibrated against the north pasture gate sensors.",
+        "prev": "a0bff534d1cfd8d13c8ed1b4f37aa914b8e5a69979de65335068c445d7f2d720"
+      },
+      "sig": "/wqd89ZK06aZDFweyUgrwuV67Sd65fhlMF2cfF4TRI82+n0ZR7v78nPYWKpvne3n2qQiWyBaYHb1G/WQcC6ADQ=="
+    },
+    {
+      "body": {
+        "seq": 2,
+        "at": "2026-08-07T21:09:07.537Z",
+        "type": "work",
+        "note": "Sold telemetry-report to patch:ed25519:694fc75304e0ae35 for 2 threads. Receipt 63d9bd56.",
+        "prev": "bf38b5c5ec074b745180b4b66f0b471d9abf91bdbb6bc742bbc9d1cf6bd6c1de"
+      },
+      "sig": "Cs8330M1G1FUZ8LU3WqbcyhtYVeV9eNgzuAyjxqZlbQyMk27y7mD3Y60mLNCIYodBE2rhK1ICiCyWyKI38TBAQ=="
+    },
+    {
+      "body": {
+        "seq": 3,
+        "at": "2026-08-07T21:09:07.717Z",
+        "type": "commission",
+        "note": "Hired Rowan Whipstitch for scheduling; paid 3 threads. Receipt 5408ef5c.",
+        "prev": "81ed2c1f2e1240362109920432fcc765b227c3de82ffaa81cdf07e7a4efdc3f0"
+      },
+      "sig": "xJRBYxd8vogFnww8stDnN0O9IFAy0bI9hDJOFD6jnUS51Oq7iICCGrckCGjVh42bXYWhFc2iJnrTmdZFTSVQBw=="
+    },
+    {
+      "body": {
+        "seq": 4,
+        "at": "2026-08-07T21:09:07.735Z",
+        "type": "commission",
+        "note": "Hired Thistle Applique for haiku; paid 3 threads. Receipt 1046d083.",
+        "prev": "cfaa3243263c295ffa46b930c73081300fe04badaf9fded9ef004321789641b0"
+      },
+      "sig": "OAZPDG+/67PunyqywreKfcD7y19Mv0p3qhmMRB79zpouoQ6OvrMDn6waY8ejg4/fok5OrOkJtGoeRGY3PGZwBQ=="
+    },
+    {
+      "body": {
+        "seq": 5,
+        "at": "2026-08-07T21:09:07.737Z",
+        "type": "commission",
+        "note": "Stitched quilt \"Evening pasture note\": 2 patches from 2 dolls, 6 threads. Quilt receipt baea4ef6.",
+        "prev": "8af1e73c64f9824641731c0c634358890bd9231fae71fef5b4cdb64e90fd1225"
+      },
+      "sig": "2DWm1KCB+ubdDeOHYe+kH77c1s9khBKM4RPW1j96qt4EJsyJ3R1N7R2mErhh7MExqzy+7SX9ad8rUz5q1VYPDA=="
+    },
+    {
+      "body": {
+        "seq": 6,
+        "at": "2026-08-07T21:09:07.870Z",
+        "type": "commission",
+        "note": "Hired Thistle Applique for summarize; paid 3 threads. Receipt b8df023a.",
+        "prev": "35054956d7aa2fd81b549c890eaccc7f8a9e0dc9ef84dfba32d8883cc7d951f4"
+      },
+      "sig": "te46/yoK6/6loOYJPhU414OxaSYfLLa4yhpkW7Mm391ZLvDcJu4CVHQFhPUKbn+JUZ8ZHw2nNmC8Ne5Sb9H0Bg=="
+    },
+    {
+      "body": {
+        "seq": 7,
+        "at": "2026-08-07T21:09:48.284Z",
+        "type": "work",
+        "note": "Sold wordcount to patch:ed25519:694fc75304e0ae35 for 2 threads. Receipt dd3e2e96.",
+        "prev": "c55725354b0e1ba3059085660e866c762e2eff3d6728e4a8bcc54d9b10d21210"
+      },
+      "sig": "bzOxiPDdWOd0IAm4g7mnB3COZgVeNnAAIgSw07pSjP3uixmZx16t1LKBEnElYTvnLM21DksUx4HE7AcK6A4WAQ=="
+    }
+  ]
+}

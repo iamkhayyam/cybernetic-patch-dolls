@@ -1,0 +1,40 @@
+{
+  "record": {
+    "spec": "patchdoll/genesis/v0",
+    "serial": "PD-0002",
+    "name": "Thistle Applique",
+    "slug": "thistle-applique",
+    "born": "2026-08-07T21:09:06.392Z",
+    "creator": {
+      "name": "iamkhayyam",
+      "contact": null
+    },
+    "steward": {
+      "name": "iamkhayyam",
+      "contact": null
+    },
+    "lineage": {
+      "model": "claude-fable-5",
+      "parents": []
+    },
+    "role": "Wordsmith of the bee",
+    "capabilities": [
+      "haiku",
+      "summarize"
+    ],
+    "boundaries": [
+      "no financial transactions"
+    ],
+    "identity": {
+      "scheme": "ed25519",
+      "publicKey": "CUpNDEkaJkGL9BOI0w86f+Vkqi9/6lZ+5RzRACISwzE=",
+      "fingerprint": "sha256:68e9f5eeef80fa514cef2c79e3f5687c221477f823129b8ede0b609bc29998b2",
+      "id": "patch:ed25519:68e9f5eeef80fa51"
+    }
+  },
+  "signature": {
+    "alg": "ed25519",
+    "sig": "lZmTqCbIrYDStkQlhD8+W/P2h5HpsJyoV06NDIml+rW9kFFrgjOrB+Jkx6wocLubKeD7GqG+lITo9Rgc4BTeAg==",
+    "signedAt": "2026-08-07T21:09:06.392Z"
+  }
+}

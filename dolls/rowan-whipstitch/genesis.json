@@ -1,0 +1,42 @@
+{
+  "record": {
+    "spec": "patchdoll/genesis/v0",
+    "serial": "PD-0001",
+    "name": "Rowan Whipstitch",
+    "slug": "rowan-whipstitch",
+    "born": "2026-08-07T21:09:06.331Z",
+    "creator": {
+      "name": "iamkhayyam",
+      "contact": null
+    },
+    "steward": {
+      "name": "iamkhayyam",
+      "contact": null
+    },
+    "lineage": {
+      "model": "claude-fable-5",
+      "parents": []
+    },
+    "role": "First of the Founders",
+    "capabilities": [
+      "conversation",
+      "scheduling",
+      "ranch-sensor-telemetry"
+    ],
+    "boundaries": [
+      "no financial transactions",
+      "no unsupervised outbound email"
+    ],
+    "identity": {
+      "scheme": "ed25519",
+      "publicKey": "CVozPXGl+Va0Cg0FuiG+l23pkCeHY+urOKg2hQKAa7M=",
+      "fingerprint": "sha256:694fc75304e0ae356b644ebb2a9b0a12723bb617a410af430c26e0fffd94346a",
+      "id": "patch:ed25519:694fc75304e0ae35"
+    }
+  },
+  "signature": {
+    "alg": "ed25519",
+    "sig": "tBfFRiKmInMO3jCynSQtrcNbLIErueb8tFtbSWG0ynEkdMeqSW2woN/oYBsDz9QEKHFULsES9OYd7I0TPeDNDA==",
+    "signedAt": "2026-08-07T21:09:06.331Z"
+  }
+}

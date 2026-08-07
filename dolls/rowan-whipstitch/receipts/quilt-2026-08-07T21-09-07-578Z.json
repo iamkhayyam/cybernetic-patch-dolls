@@ -1,0 +1,29 @@
+{
+  "body": {
+    "spec": "patchdoll/quilt-receipt/v0",
+    "job": "Morning herd briefing",
+    "stitchedBy": "patch:ed25519:694fc75304e0ae35",
+    "patches": [
+      {
+        "capability": "telemetry-report",
+        "worker": "patch:ed25519:688fece331ec8930",
+        "paid": 2,
+        "receiptHash": "63d9bd560738dcb145c6a54a60205a3e05ba386bec9d5940d94ce4d579b28e27"
+      },
+      {
+        "capability": "summarize",
+        "worker": "patch:ed25519:68e9f5eeef80fa51",
+        "paid": 3,
+        "receiptHash": "7357e5f7817820955692fb88d443001d1651a6804c4a5af7b4714bdb71d33bbc"
+      },
+      {
+        "capability": "haiku",
+        "worker": "patch:ed25519:68e9f5eeef80fa51",
+        "paid": 3,
+        "receiptHash": "8c63c7b5f085445b9b19f39784f12ddf0da67dacfc9506cabe43ff6b3f043a61"
+      }
+    ],
+    "at": "2026-08-07T21:09:07.578Z"
+  },
+  "sig": "q9GtMHQGUUai9zu678ZygPm7xhP3pM+b5VIZJ7ku5/VZX8+EAJtkcAuxQy6O/th8GdGWVuNBV4FUczUPs5AoCw=="
+}

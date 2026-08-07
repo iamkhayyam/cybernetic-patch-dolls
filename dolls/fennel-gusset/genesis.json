@@ -1,0 +1,41 @@
+{
+  "record": {
+    "spec": "patchdoll/genesis/v0",
+    "serial": "PD-0003",
+    "name": "Fennel Gusset",
+    "slug": "fennel-gusset",
+    "born": "2026-08-07T21:09:06.449Z",
+    "creator": {
+      "name": "iamkhayyam",
+      "contact": null
+    },
+    "steward": {
+      "name": "iamkhayyam",
+      "contact": null
+    },
+    "lineage": {
+      "model": "claude-fable-5",
+      "parents": []
+    },
+    "role": "Field analyst",
+    "capabilities": [
+      "wordcount",
+      "telemetry-report"
+    ],
+    "boundaries": [
+      "no financial transactions",
+      "telemetry is advisory only"
+    ],
+    "identity": {
+      "scheme": "ed25519",
+      "publicKey": "Xltqn8R0D3OSpmrKGvbE0jcTL3ZZ5ZNjgK+JmnnEJ/I=",
+      "fingerprint": "sha256:688fece331ec893012e4362212701aed38f81f6798c83f63e75eb363e6de28c1",
+      "id": "patch:ed25519:688fece331ec8930"
+    }
+  },
+  "signature": {
+    "alg": "ed25519",
+    "sig": "BVkT64BDQ9ZwtnWRPR8BnueUNuWsh4fJCo4YYe8/fRrpZDC12jFtCjjH8PM5JpBEcsuC9qr6Ognti4fuS8cLDA==",
+    "signedAt": "2026-08-07T21:09:06.449Z"
+  }
+}

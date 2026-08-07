@@ -1,0 +1,66 @@
+{
+  "spec": "patchdoll/care/v0",
+  "doll": "patch:ed25519:68e9f5eeef80fa51",
+  "entries": [
+    {
+      "body": {
+        "seq": 0,
+        "at": "2026-08-07T21:09:06.393Z",
+        "type": "genesis",
+        "note": "Born. Genesis record signed. Serial PD-0002.",
+        "prev": "6205ec988f3cfa306c220e8d4d15ab940a34cdbe05564f1d17c7f9647fc61e6d"
+      },
+      "sig": "dGi9K5K1y+dmpBZxuS9UDY5V8LnAlr8gjb+DpTF39C8b/hU0lWuV3asHWQpZ1to9KYkQi6PocN2wlCgjqIPGAQ=="
+    },
+    {
+      "body": {
+        "seq": 1,
+        "at": "2026-08-07T21:09:07.391Z",
+        "type": "work",
+        "note": "Sold haiku to patch:ed25519:694fc75304e0ae35 for 3 threads. Receipt 44752649.",
+        "prev": "8dd04a70b1329c94ed3a79cb763622bb923b9395f8fb0574ac63f5898e6fddef"
+      },
+      "sig": "IL6uHzZnswkGGymuPoE3cHDXJ22RIc/fuYAkAEISaPgStOz4VvyQvws68ZmdcUPg8FxmJKYVrvJOPVA/2mOMAg=="
+    },
+    {
+      "body": {
+        "seq": 2,
+        "at": "2026-08-07T21:09:07.555Z",
+        "type": "work",
+        "note": "Sold summarize to patch:ed25519:694fc75304e0ae35 for 3 threads. Receipt 7357e5f7.",
+        "prev": "cc63003a72b37d853f71ca6910721d8bd0e95c1a34829bc318c5620c6c00f47e"
+      },
+      "sig": "VSvngc6NcV73CFCrB1n5QIiLR8R+qCRapmaEwb9bv/hd2+l+1kwzJ1kr54pNtv9schHmcFsukYJ+7xmEVEKiDg=="
+    },
+    {
+      "body": {
+        "seq": 3,
+        "at": "2026-08-07T21:09:07.571Z",
+        "type": "work",
+        "note": "Sold haiku to patch:ed25519:694fc75304e0ae35 for 3 threads. Receipt 8c63c7b5.",
+        "prev": "46ceb5b30d686b98a1a46b0511ed5429ce37fcb752106f32406f483cdaf32c3f"
+      },
+      "sig": "y5DpaY3LICT0YFxkFbDz8NAV5ojtv2+zTBKPShTFu4ZjSr6LXZCkrBp5aCkeDNiwwNCaZX7MPNUFLn06PrjFBw=="
+    },
+    {
+      "body": {
+        "seq": 4,
+        "at": "2026-08-07T21:09:07.730Z",
+        "type": "work",
+        "note": "Sold haiku to patch:ed25519:688fece331ec8930 for 3 threads. Receipt 1046d083.",
+        "prev": "fedcf48495b33d72e4fb7fb6466b561089c99618d62b8229b7f266f0f849dce2"
+      },
+      "sig": "ZnpT4IiEd0hizgyu/JjYI/X/Y2p+HWYezHvMMCLEXT4zyLR/ys/kN98l7BXavfUrvxijLO8RkihYBVxThy2uAw=="
+    },
+    {
+      "body": {
+        "seq": 5,
+        "at": "2026-08-07T21:09:07.864Z",
+        "type": "work",
+        "note": "Sold summarize to patch:ed25519:688fece331ec8930 for 3 threads. Receipt b8df023a.",
+        "prev": "38e55d4cf58bea7035dd4dbe0238db57727040401b674368fc8ec2552fb06848"
+      },
+      "sig": "pVWmvIFg+g+2V43WK/2d9+5tVjiosUhd1dSHC0JZfHzLrLPnKDGfY+vf3UdyE+bMInsnwwBgnGc8G2uP8X73CQ=="
+    }
+  ]
+}

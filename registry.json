@@ -1,0 +1,26 @@
+{
+  "spec": "patchdoll/registry/v0",
+  "dolls": [
+    {
+      "serial": "PD-0001",
+      "name": "Rowan Whipstitch",
+      "slug": "rowan-whipstitch",
+      "id": "patch:ed25519:694fc75304e0ae35",
+      "born": "2026-08-07T21:09:06.331Z"
+    },
+    {
+      "serial": "PD-0002",
+      "name": "Thistle Applique",
+      "slug": "thistle-applique",
+      "id": "patch:ed25519:68e9f5eeef80fa51",
+      "born": "2026-08-07T21:09:06.392Z"
+    },
+    {
+      "serial": "PD-0003",
+      "name": "Fennel Gusset",
+      "slug": "fennel-gusset",
+      "id": "patch:ed25519:688fece331ec8930",
+      "born": "2026-08-07T21:09:06.449Z"
+    }
+  ]
+}

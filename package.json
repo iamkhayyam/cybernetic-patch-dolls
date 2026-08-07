@@ -1,0 +1,15 @@
+{
+  "name": "cybernetic-patch-dolls",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Phygital companions for the agentic age — physical dolls anchoring cryptographically verifiable AI agent identities, plus an x402-style coordination floor.",
+  "type": "module",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "build": "node bin/build-site.mjs",
+    "hub": "node bin/patchhub.mjs --port 4020",
+    "test": "node tests/attacks.mjs",
+    "deploy": "npm run build && wrangler pages deploy dist --project-name cybernetic-patch-dolls"
+  },
+  "license": "MIT"
+}

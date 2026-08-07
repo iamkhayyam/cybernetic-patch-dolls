@@ -1,0 +1,96 @@
+{
+  "spec": "patchdoll/care/v0",
+  "doll": "patch:ed25519:694fc75304e0ae35",
+  "entries": [
+    {
+      "body": {
+        "seq": 0,
+        "at": "2026-08-07T21:09:06.332Z",
+        "type": "genesis",
+        "note": "Born. Genesis record signed. Serial PD-0001.",
+        "prev": "829e5813192b60c62b68392f5dfd95e8df137f993bcb7c017f5738f14fbdd68e"
+      },
+      "sig": "Awennocj/fzHiCdenpGWavNFEQvy6DmKwoLsT7hIoYDDMenyG7ZkzzGJ53v51rBmEYUNqFZed1Fu3BTRKr/sCg=="
+    },
+    {
+      "body": {
+        "seq": 1,
+        "at": "2026-08-07T21:09:06.507Z",
+        "type": "patch",
+        "note": "Safety evaluation v1 passed; guardrail patch 2026.08 applied.",
+        "prev": "f37d318ae70bf9605d5b23ca232ab3709f32fee0f2d366bc74e72c513a60668d"
+      },
+      "sig": "SC/TE+dpwBzeXeAjU7Is93IAQnMGpqOQbZkxhEKR4Y57amrnjC+jk15XCni+bS/Gx2vSj8Qo30UXxPzhQAn3BQ=="
+    },
+    {
+      "body": {
+        "seq": 2,
+        "at": "2026-08-07T21:09:06.563Z",
+        "type": "checkup",
+        "note": "First field checkup: telemetry link to herd sensors nominal.",
+        "prev": "08b6ebca60b9ae09bec419331ef9f3e46b5f2bc1367a7709da30704f316dc80b"
+      },
+      "sig": "gPyhrQUPy9hfrm4Oo1LHx8S/rdeuTbdzPQQ5dSJOAHZrDy137SbH1B0ZhJqJV5HA+ii94amnK4Oa+ul8YgXyBQ=="
+    },
+    {
+      "body": {
+        "seq": 3,
+        "at": "2026-08-07T21:09:07.395Z",
+        "type": "commission",
+        "note": "Hired Thistle Applique for haiku; paid 3 threads. Receipt 44752649.",
+        "prev": "c57caa46a210c4f2287cea8aab031d9216e942205453566403011a5ab93904ba"
+      },
+      "sig": "6Ggb4loxhEgFk3+6+l+9XI27EVnFBbcHqVnthGEJLAxzWdVBpPh7iRpJALdd1NwthJ5QBHb8nPsM33QAN69RCw=="
+    },
+    {
+      "body": {
+        "seq": 4,
+        "at": "2026-08-07T21:09:07.541Z",
+        "type": "commission",
+        "note": "Hired Fennel Gusset for telemetry-report; paid 2 threads. Receipt 63d9bd56.",
+        "prev": "c64c47ff295a3b9b945717148b108cc913d86f0257ad15cbc7485cdce5365c68"
+      },
+      "sig": "ZHFhpf6tssCAEV0iBE/A/G+nwYkQXjoeqHLjifl+zqZplXNe7YhKr/ddCwJMtXr4BS0GKzMC9p/19jFeFqpeDg=="
+    },
+    {
+      "body": {
+        "seq": 5,
+        "at": "2026-08-07T21:09:07.559Z",
+        "type": "commission",
+        "note": "Hired Thistle Applique for summarize; paid 3 threads. Receipt 7357e5f7.",
+        "prev": "c6d194093cb4ce483de97d5f978de3534ea99cb4845011ea2e177bda398aabb0"
+      },
+      "sig": "mhA/EU3uvjqsauuTkHYLsX6iD4FiHIYxMWrwq+ja6C0mMRkhtuiUozblzO0Si4WRCt40nEwzSyuO3dTR+Sf4AQ=="
+    },
+    {
+      "body": {
+        "seq": 6,
+        "at": "2026-08-07T21:09:07.577Z",
+        "type": "commission",
+        "note": "Hired Thistle Applique for haiku; paid 3 threads. Receipt 8c63c7b5.",
+        "prev": "28e89db9fa0badac019cbc8ae2f3f870df19f9caca8862939fe00e6dda9268ee"
+      },
+      "sig": "VHqe9xZOiSNawIXVIqDVMmhzqB/oFCYqzK8NjifxhBRri8fFYgBdtd1r51zN+v4h94MSgENLl0i32mxg0on0Aw=="
+    },
+    {
+      "body": {
+        "seq": 7,
+        "at": "2026-08-07T21:09:07.578Z",
+        "type": "commission",
+        "note": "Stitched quilt \"Morning herd briefing\": 3 patches from 2 dolls, 8 threads. Quilt receipt bdeb9b92.",
+        "prev": "c4edd7fd6a8f0704d988fc90b307ecc9d9a3f87cb60b1983211335510cb27770"
+      },
+      "sig": "c2LL7nU6isQTJ1ZifAVeeG13c0nQS9JHo+/tjygbK1iGKLVS1W4U1oSb5XqieIfNG1uu5c7HXJ3piFCyzGxMAg=="
+    },
+    {
+      "body": {
+        "seq": 8,
+        "at": "2026-08-07T21:09:07.712Z",
+        "type": "work",
+        "note": "Sold scheduling to patch:ed25519:688fece331ec8930 for 3 threads. Receipt 5408ef5c.",
+        "prev": "5fb214e22619b8f6be70dd66f8c34ce72b6fddf19a154a56c6b1be46ba4135fe"
+      },
+      "sig": "Lr/2gjbdljHT/Yv5El20dnDERSRFrpNDHYye3Go06SdVlxKbpuAXJgHXgnT7JWh0avOI6iL1aLs0CU7mnAYTCA=="
+    }
+  ]
+}

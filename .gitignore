@@ -1,0 +1,13 @@
+# A doll's private key belongs in its body, never in a repository.
+# Published dolls ship their public records only: verifiable by anyone, signable by nobody.
+dolls/*/keys/private.pem
+
+# Local hub ledger state
+hub-state.json
+
+# Build output
+dist/
+
+node_modules/
+.DS_Store
+.wrangler/

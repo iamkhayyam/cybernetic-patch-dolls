@@ -89,15 +89,18 @@ function landing() {
   const rows = dolls.map(({ slug, genesis, care }) => {
     const r = genesis.record;
     const fp = r.identity.fingerprint.replace('sha256:', '');
-    return `<a class="plain reg-row" href="/d/${esc(slug)}/">
-      <div class="mount">${quiltSvg(fp, 72)}</div>
-      <div>
+    return `<a class="entry" href="/d/${esc(slug)}/">
+      <div class="mount">${quiltSvg(fp, 132)}</div>
+      <div class="body">
+        <div class="kicker">${esc(r.serial)} · ${esc(r.role || 'Companion agent')}</div>
         <h3>${esc(r.name)}</h3>
-        <div class="meta">${esc(r.serial)} · ${esc(fp.slice(0, 10))}</div>
-        <div class="state"><span class="dot"></span>${esc(r.role || 'companion agent')}</div>
+        <div class="fp mono">${esc(fp.slice(0, 32))}<span class="tail">${esc(fp.slice(32))}</span></div>
+        <div class="caps">${r.capabilities.map((c) => `<span class="chip">${esc(c)}</span>`).join('')}</div>
       </div>
-      <div class="chips">${r.capabilities.map((c) => `<span class="chip">${esc(c)}</span>`).join('')}</div>
-      <div class="bal"><div class="n">${care.entries.length}</div><div class="u">signed entries</div></div>
+      <div class="go">
+        <div class="n">${care.entries.length}<span>signed entries</span></div>
+        <div class="cta">View certificate <span aria-hidden="true">→</span></div>
+      </div>
     </a>`;
   }).join('\n');
 
@@ -108,20 +111,51 @@ function landing() {
 ${BASE_CSS}
 ${FLOOR_CSS}
 ${SITE_CSS}
-  .hero { padding: clamp(48px, 9vw, 104px) 0 clamp(32px, 5vw, 56px); border-bottom: 2px solid var(--ink); }
+  .hero { padding: clamp(48px, 9vw, 104px) 0 clamp(48px, 7vw, 88px); border-bottom: 2px solid var(--ink); }
   .hero .kicker { font-size: var(--t-label); font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--stamp-ink); margin-bottom: 18px; }
   .hero h1 { font-size: clamp(2.2rem, 6.4vw, 4.5rem); font-weight: 800; letter-spacing: -0.035em; line-height: 0.98; max-width: 17ch; text-wrap: balance; }
   .hero p { margin-top: 24px; max-width: 60ch; font-size: var(--t-lead); color: var(--ink-2); }
-  .spec { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 0 clamp(28px, 5vw, 56px); }
-  .spec section { padding-top: 8px; }
-  .spec h3 { font-size: var(--t-label); font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--graphite); padding: 24px 0 10px; border-bottom: 1px solid var(--rule); margin-bottom: 12px; }
+
+  /* Landing sections use display-scale heads, not the dashboard's 11px silkscreen labels.
+     Weight and size do the anchoring; a small caption sits underneath as context. */
+  .sect { padding: clamp(40px, 6vw, 72px) 0 clamp(18px, 2.5vw, 24px); }
+  .sect h2 { font-size: clamp(1.75rem, 3.4vw, 2.4rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.05; }
+  .sect .caption { margin-top: 10px; font-size: var(--t-label); font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--graphite); }
+
+  /* Registry entries: bigger quilts (they encode identity — they earn the space),
+     display-scale name, room to read the fingerprint intact, and a clear CTA. */
+  .collection { border-top: 2px solid var(--ink); }
+  .entry { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: clamp(24px, 4vw, 44px); align-items: center; padding: clamp(24px, 3vw, 32px) clamp(12px, 2vw, 24px) clamp(24px, 3vw, 32px) 0; border-bottom: 1px solid var(--rule); text-decoration: none; color: inherit; transition: background 140ms var(--ease); }
+  .entry:hover, .entry:focus-visible { background: var(--plate); outline: none; }
+  .entry .mount { border: 1px solid var(--rule-strong); padding: 6px; background: var(--plate); line-height: 0; align-self: start; }
+  .entry .kicker { font-size: var(--t-label); font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--stamp-ink); margin-bottom: 8px; }
+  .entry h3 { font-size: clamp(1.6rem, 3vw, 2.15rem); font-weight: 700; letter-spacing: -0.025em; line-height: 1.05; }
+  .entry .fp { margin-top: 12px; font-size: var(--t-micro); color: var(--graphite); letter-spacing: -0.005em; word-break: break-all; }
+  .entry .fp .tail { color: var(--rule-strong); }
+  .entry .caps { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 14px; }
+  .entry .go { text-align: right; }
+  .entry .n { font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1; font-variant-numeric: tabular-nums; }
+  .entry .n span { display: block; font-size: var(--t-micro); font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--graphite); margin-top: 6px; }
+  .entry .cta { margin-top: 20px; font-size: var(--t-label); font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--stamp-ink); }
+  .entry .cta span { display: inline-block; transition: transform 140ms var(--ease); }
+  .entry:hover .cta span { transform: translateX(4px); }
+  @media (max-width: 720px) {
+    .entry { grid-template-columns: auto 1fr; padding-right: 0; }
+    .entry .go { grid-column: 1 / -1; text-align: left; display: flex; align-items: baseline; gap: 24px; justify-content: space-between; }
+    .entry .cta { margin-top: 0; }
+  }
+
+  /* Certificate-proves: bigger heads, rule as separator, prose sits below on its own. */
+  .spec { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 0 clamp(32px, 5vw, 64px); border-top: 1px solid var(--rule); }
+  .spec section { padding: 28px 0 32px; border-bottom: 1px solid var(--rule); }
+  .spec h3 { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.015em; color: var(--ink); margin-bottom: 12px; }
   .spec p { color: var(--ink-2); max-width: 46ch; }
-  ol.flowlist { list-style: none; counter-reset: s; border-top: 1px solid var(--rule-strong); }
-  ol.flowlist li { counter-increment: s; display: grid; grid-template-columns: 3rem 1fr; gap: 20px; padding: 16px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
-  ol.flowlist li::before { content: counter(s, decimal-leading-zero); font-family: var(--mono); font-size: var(--t-data); color: var(--stamp-ink); font-weight: 500; }
-  ol.flowlist p { color: var(--ink-2); max-width: 62ch; }
+
+  ol.flowlist { list-style: none; counter-reset: s; border-top: 2px solid var(--ink); }
+  ol.flowlist li { counter-increment: s; display: grid; grid-template-columns: 3.5rem 1fr; gap: 24px; padding: 22px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+  ol.flowlist li::before { content: counter(s, decimal-leading-zero); font-family: var(--mono); font-size: 1.05rem; color: var(--stamp-ink); font-weight: 500; letter-spacing: -0.02em; }
+  ol.flowlist p { color: var(--ink-2); max-width: 62ch; font-size: var(--t-lead); }
   ol.flowlist b { color: var(--ink); font-weight: 600; }
-  .reg-row:hover { background: var(--plate); }
 </style>
 ${masthead('Public registry', 'iamkhayyam')}
 <div class="wrap">
@@ -134,10 +168,16 @@ ${masthead('Public registry', 'iamkhayyam')}
     signs a doll's birth certificate also signs its payment vouchers and its work receipts.</p>
   </div>
 
-  <h2 class="sec">The register <span>${dolls.length} dolls · ${totalEntries} signed entries</span></h2>
-  <div class="register">${rows}</div>
+  <div class="sect">
+    <h2>The register</h2>
+    <div class="caption">${dolls.length} ${dolls.length === 1 ? 'doll' : 'dolls'} · ${totalEntries} signed entries</div>
+  </div>
+  <div class="collection">${rows}</div>
 
-  <h2 class="sec">What a certificate proves</h2>
+  <div class="sect">
+    <h2>What a certificate proves</h2>
+    <div class="caption">Three claims, kept deliberately separate</div>
+  </div>
   <div class="spec">
     <section>
       <h3>Identity</h3>
@@ -156,7 +196,10 @@ ${masthead('Public registry', 'iamkhayyam')}
     </section>
   </div>
 
-  <h2 class="sec">How dolls hire each other</h2>
+  <div class="sect">
+    <h2>How dolls hire each other</h2>
+    <div class="caption">An x402-shaped exchange, no money moves</div>
+  </div>
   <ol class="flowlist">
     <li><p>A doll asks another for work. The service answers <b>402 Payment Required</b> with its price, payee id, and a single-use nonce.</p></li>
     <li><p>The buyer signs a <b>voucher</b> over those exact terms, using the same key that signs its birth certificate.</p></li>

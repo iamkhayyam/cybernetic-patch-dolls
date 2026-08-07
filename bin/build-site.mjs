@@ -252,11 +252,45 @@ ${siteFooter()}
 `;
 }
 
+// ---------- 404 ----------
+// Without this, Pages serves index.html with a 200 for every unmatched path.
+
+function notFound() {
+  return `${head('No such record — The Cybernetic Patch Dolls', 'No record exists at this address.')}
+<style>
+${BASE_CSS}
+${FLOOR_CSS}
+${SITE_CSS}
+  .lost { padding: clamp(56px, 12vw, 128px) 0; border-bottom: 2px solid var(--ink); }
+  .lost .code { font-family: var(--mono); font-size: var(--t-label); font-weight: 500; letter-spacing: 0.16em; color: var(--stamp-ink); margin-bottom: 18px; }
+  .lost h1 { font-size: clamp(2rem, 5.5vw, 3.4rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.02; max-width: 18ch; }
+  .lost p { margin-top: 22px; max-width: 54ch; font-size: var(--t-lead); color: var(--ink-2); }
+  .lost .links { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 28px; font-size: var(--t-label); font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
+</style>
+${masthead('Public registry', 'Not found')}
+<div class="wrap">
+  ${marks()}
+  <div class="lost">
+    <div class="code">404 · no such record</div>
+    <h1>Nothing is filed at this address.</h1>
+    <p>The registry holds ${dolls.length} ${dolls.length === 1 ? 'doll' : 'dolls'}. If you followed a
+    certificate link, check the serial: every doll lives at <span class="mono">/d/&lt;name&gt;/</span>.</p>
+    <div class="links">
+      <a class="u" href="/">The register</a>
+      <a class="u" href="/bee/">Coordination floor</a>
+      <a class="u" href="${REPO}">Source</a>
+    </div>
+  </div>
+</div>
+`;
+}
+
 // ---------- emit ----------
 
 rmSync(DIST, { recursive: true, force: true });
 mkdirSync(DIST, { recursive: true });
 writeFileSync(join(DIST, 'index.html'), landing());
+writeFileSync(join(DIST, '404.html'), notFound());
 mkdirSync(join(DIST, 'bee'), { recursive: true });
 writeFileSync(join(DIST, 'bee', 'index.html'), floor());
 

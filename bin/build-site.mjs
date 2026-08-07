@@ -52,7 +52,16 @@ const head = (title, desc) => `<!doctype html>
 <meta property="og:type" content="website">
 ${FONTS}`;
 
-const masthead = (right1, right2, href = '/') => `
+// The right side is documentary metadata about the page, not a session indicator.
+// Anything person-shaped in the top-right corner is read as "logged in as X" — do not put
+// a bare handle there. Use the `link` form to make it an unambiguous nav element (source
+// repo, section, etc.) with an underline that says "click me", not "you".
+const masthead = (right1, right2, opts = {}) => {
+  const { href = '/', link = null } = opts;
+  const right = link
+    ? `<a class="mast-link" href="${esc(link)}">${esc(right2)}</a>`
+    : `<span class="serial">${esc(right2)}</span>`;
+  return `
 <div class="masthead">
   <a href="${href}" style="text-decoration:none">
     <div class="registry">The Cybernetic Patch Dolls</div>
@@ -60,13 +69,18 @@ const masthead = (right1, right2, href = '/') => `
   </a>
   <div style="text-align:right">
     <div class="doc">${esc(right1)}</div>
-    <div class="serial">${esc(right2)}</div>
+    ${right}
   </div>
 </div>`;
+};
 
 const SITE_CSS = `
   a.plain { text-decoration: none; color: inherit; }
   a.u { color: var(--stamp-ink); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  /* Masthead nav link — mono like a repository path, underlined so nobody mistakes it for
+     an account handle. */
+  .masthead .mast-link { font-family: var(--mono); font-size: var(--t-data); color: var(--plate); letter-spacing: -0.005em; text-decoration: underline; text-decoration-color: oklch(0.72 0.008 70 / 0.5); text-underline-offset: 3px; }
+  .masthead .mast-link:hover { text-decoration-color: var(--stamp); }
   footer.site { border-top: 1px solid var(--rule-strong); margin-top: 72px; padding: 28px 0 96px; }
   footer.site p { max-width: 62ch; color: var(--graphite); }
   footer.site .links { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 16px; font-size: var(--t-label); font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
@@ -283,7 +297,7 @@ ${SITE_CSS}
   .verify .out .ok { color: var(--stamp-ink); font-weight: 600; }
   .verify .out b { color: var(--ink); font-weight: 600; }
 </style>
-${masthead('Public registry', 'iamkhayyam')}
+${masthead('Source', 'iamkhayyam/cybernetic-patch-dolls', { link: REPO })}
 <div class="wrap">
   ${marks()}
   <div class="hero">

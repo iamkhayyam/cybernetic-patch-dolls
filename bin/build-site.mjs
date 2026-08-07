@@ -114,6 +114,39 @@ function landing() {
     return `<div class="pane" data-i="${i}" data-fp="${esc(fp.slice(0, 16))}" data-name="${esc(genesis.record.name)}" data-serial="${esc(genesis.record.serial)}">${quiltSvg(fp, 340, { animated: true })}</div>`;
   }).join('');
 
+  const wedges = [
+    {
+      kicker: 'Livestock & ranches',
+      claim: 'The insurance carrier is the customer, not the rancher.',
+      body: 'When an AI agent recommends culling a herd or moving a treatment plan, insurance and USDA both want a name on that decision. A doll\'s certificate is that name; its care record is the evidence. First deployment target for the field-programs pilot.',
+    },
+    {
+      kicker: 'Regulated finance',
+      claim: 'Every dollar an agent moves needs a chain back to a person.',
+      body: 'FinCEN does not care which framework anyone uses, only that there is a signed chain from every action to a responsible party. The voucher signature and the birth-certificate signature are the same key. You cannot separate the act from the actor.',
+    },
+    {
+      kicker: 'Content provenance',
+      claim: 'A better shape than C2PA metadata.',
+      body: 'When an artist agent signs each work with the same key that signs its own genesis, provenance stops being a fragile piece of metadata and becomes the same signature the agent itself was born with. Getty, Adobe, and the platforms want this shape.',
+    },
+  ];
+
+  const surfaces = [
+    { status: 'live', name: 'The Register', href: '/', body: 'Browse every doll ever born. Filter by lineage, capability, era, or care-record depth.' },
+    { status: 'live', name: 'The Quilting Bee', href: '/bee/', body: 'The coordination floor. Real-time capability pricing, live thread ledger, signed work receipts.' },
+    { status: 'on deck', name: 'Genealogy', href: null, body: 'The family trees. Founders, lineages, and discovery by descent from named parent agents.' },
+    { status: 'on deck', name: 'Field programs', href: null, body: 'Dolls deployed to real hardware — livestock sensors, greenhouses, lab instruments. Where care records earn operational value, not sentimental.' },
+  ];
+
+  const position = [
+    ['Who am I paying?', 'An endpoint URL.', 'A key whose genesis record names a responsible human.'],
+    ['Is it allowed to do this?', 'Trust the docs.', 'Capabilities enumerated in a signed birth certificate.'],
+    ['Has it behaved before?', 'No signal.', 'An append-only, hash-chained care record.'],
+    ['What if it lies about what it did?', 'Nothing.', 'A signed work receipt binds worker, client, input, and result.'],
+    ['Who do I sue?', 'Nobody.', 'The named steward.'],
+  ];
+
   return `${head('The Cybernetic Patch Dolls', 'Phygital companions for the agentic age. Physical dolls that anchor cryptographically verifiable AI agent identities.')}
 <style>
 ${BASE_CSS}
@@ -180,17 +213,77 @@ ${SITE_CSS}
     .entry .cta { margin-top: 0; }
   }
 
-  /* Certificate-proves: bigger heads, rule as separator, prose sits below on its own. */
-  .spec { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 0 clamp(32px, 5vw, 64px); border-top: 1px solid var(--rule); }
-  .spec section { padding: 28px 0 32px; border-bottom: 1px solid var(--rule); }
-  .spec h3 { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.015em; color: var(--ink); margin-bottom: 12px; }
-  .spec p { color: var(--ink-2); max-width: 46ch; }
+  /* Position: rhetorical Q/A grid. Payment rails alone in one column, with-a-Patch-Doll
+     in the next, so the value moves left-to-right on every row. */
+  .position { border-top: 2px solid var(--ink); }
+  .position .row { display: grid; grid-template-columns: minmax(0, 13rem) minmax(0, 1fr); gap: clamp(20px, 3vw, 40px); padding: 22px 4px; border-bottom: 1px solid var(--rule); align-items: baseline; }
+  .position .q { font-size: var(--t-lead); font-weight: 700; color: var(--ink); letter-spacing: -0.015em; }
+  .position .a { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(20px, 3vw, 44px); font-size: var(--t-body); }
+  .position .a .before { color: var(--graphite); }
+  .position .a .then { color: var(--ink); font-weight: 500; }
+  .position .head { padding: 12px 4px 14px; border-bottom: 1px solid var(--rule-strong); }
+  .position .head .q { font-size: 0; }
+  .position .head .a { font-size: var(--t-label); font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--graphite); }
+  .position .head .then { color: var(--stamp-ink); }
+  @media (max-width: 720px) {
+    .position .row { grid-template-columns: 1fr; }
+    .position .a { grid-template-columns: 1fr; gap: 10px; }
+    .position .head { display: none; }
+    .position .a .before::before { content: 'Payment rails alone: '; color: var(--graphite); font-weight: 600; }
+    .position .a .then::before { content: 'With a Patch Doll: '; color: var(--stamp-ink); font-weight: 600; }
+  }
 
-  ol.flowlist { list-style: none; counter-reset: s; border-top: 2px solid var(--ink); }
-  ol.flowlist li { counter-increment: s; display: grid; grid-template-columns: 3.5rem 1fr; gap: 24px; padding: 22px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
-  ol.flowlist li::before { content: counter(s, decimal-leading-zero); font-family: var(--mono); font-size: 1.05rem; color: var(--stamp-ink); font-weight: 500; letter-spacing: -0.02em; }
-  ol.flowlist p { color: var(--ink-2); max-width: 62ch; font-size: var(--t-lead); }
-  ol.flowlist b { color: var(--ink); font-weight: 600; }
+  /* Wedges: three cases side by side, each with a stamp-ink kicker, a claim in display
+     scale, and a paragraph. Separated by vertical rules on wide screens, horizontals when
+     they stack. */
+  .wedges { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); border-top: 2px solid var(--ink); }
+  .wedges .case { padding: 30px clamp(24px, 3vw, 40px) 36px 0; border-bottom: 1px solid var(--rule); border-right: 1px solid var(--rule); }
+  .wedges .case:last-child { border-right: none; padding-right: 0; }
+  .wedges .case { padding-left: clamp(0px, 3vw, 40px); }
+  .wedges .case:first-child { padding-left: 0; }
+  .wedges .kicker { font-size: var(--t-micro); font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--stamp-ink); margin-bottom: 14px; }
+  .wedges .claim { font-size: clamp(1.15rem, 1.7vw, 1.4rem); font-weight: 700; letter-spacing: -0.015em; line-height: 1.15; margin-bottom: 14px; text-wrap: balance; }
+  .wedges .body { color: var(--ink-2); max-width: 42ch; }
+
+  /* Moat: one full-width statement in near-display scale, then a signed timeline that shows
+     the record accumulating. */
+  .moat { border-top: 2px solid var(--ink); padding: 40px 0 32px; }
+  .moat p.lede { font-size: clamp(1.3rem, 2.2vw, 1.7rem); font-weight: 500; line-height: 1.25; letter-spacing: -0.015em; color: var(--ink); max-width: 62ch; text-wrap: balance; }
+  .moat p.lede em { color: var(--stamp-ink); font-style: normal; }
+  .moat p.follow { margin-top: 24px; color: var(--ink-2); max-width: 62ch; font-size: var(--t-lead); }
+  .moat .timeline { margin-top: 40px; border-top: 1px solid var(--rule); }
+  .moat .step { display: grid; grid-template-columns: minmax(0, 10rem) 1fr; gap: clamp(20px, 3vw, 40px); padding: 16px 4px; border-bottom: 1px solid var(--rule); align-items: baseline; }
+  .moat .step .when { font-family: var(--mono); font-size: var(--t-data); color: var(--stamp-ink); letter-spacing: -0.005em; }
+  .moat .step .what { color: var(--ink-2); }
+  .moat .step .what b { color: var(--ink); font-weight: 600; }
+
+  /* Platform surfaces: 2×2 grid of what is built and what is next. Status is a compact pill
+     in the top-left; live surfaces link out. */
+  .surfaces { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); border-top: 2px solid var(--ink); }
+  .surfaces .surface { padding: 26px 24px 30px 0; border-bottom: 1px solid var(--rule); border-right: 1px solid var(--rule); text-decoration: none; color: inherit; display: block; transition: background 140ms var(--ease); }
+  .surfaces .surface:nth-child(2n) { border-right: none; padding-right: 0; padding-left: clamp(0px, 3vw, 40px); }
+  @media (min-width: 720px) { .surfaces .surface:nth-child(-n+2) { border-bottom: 1px solid var(--rule-strong); } }
+  .surfaces a.surface:hover { background: var(--plate); }
+  .surfaces .status { display: inline-flex; align-items: center; gap: 6px; font-size: var(--t-micro); font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--graphite); margin-bottom: 16px; }
+  .surfaces .status::before { content: ''; width: 6px; height: 6px; background: var(--rule-strong); }
+  .surfaces .status.live { color: var(--stamp-ink); }
+  .surfaces .status.live::before { background: var(--stamp); }
+  .surfaces h3 { font-size: clamp(1.3rem, 2vw, 1.55rem); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 10px; }
+  .surfaces h3 .arrow { color: var(--stamp-ink); display: inline-block; margin-left: 6px; transition: transform 140ms var(--ease); }
+  .surfaces a.surface:hover h3 .arrow { transform: translateX(4px); }
+  .surfaces p { color: var(--ink-2); max-width: 46ch; }
+
+  /* Verify: proof by demonstration. A pre block with the actual verification code you can
+     run against any doll on this site. */
+  .verify { border-top: 2px solid var(--ink); padding: 32px 0 8px; }
+  .verify p { color: var(--ink-2); max-width: 62ch; font-size: var(--t-lead); margin-bottom: 24px; }
+  .verify pre { background: var(--ink); color: oklch(0.93 0.006 75); padding: 22px 26px; font-family: var(--mono); font-size: 0.82rem; line-height: 1.65; overflow-x: auto; letter-spacing: -0.005em; }
+  .verify pre .k { color: oklch(0.78 0.08 60); }
+  .verify pre .s { color: oklch(0.75 0.11 145); }
+  .verify pre .c { color: oklch(0.55 0.008 65); font-style: italic; }
+  .verify .out { padding: 16px 26px; background: var(--plate); border: 1px solid var(--rule-strong); border-top: none; font-family: var(--mono); font-size: 0.78rem; color: var(--ink-2); letter-spacing: -0.005em; line-height: 1.7; }
+  .verify .out .ok { color: var(--stamp-ink); font-weight: 600; }
+  .verify .out b { color: var(--ink); font-weight: 600; }
 </style>
 ${masthead('Public registry', 'iamkhayyam')}
 <div class="wrap">
@@ -216,36 +309,29 @@ ${masthead('Public registry', 'iamkhayyam')}
   </div>
 
   <div class="sect">
+    <h2>The position</h2>
+    <div class="caption">What a certificate answers that a payment rail does not</div>
+  </div>
+  <div class="position">
+    <div class="row head">
+      <div class="q"></div>
+      <div class="a"><span class="before">Payment rails alone</span><span class="then">With a Patch Doll</span></div>
+    </div>
+    ${position.map(([q, before, then]) => `<div class="row">
+      <div class="q">${esc(q)}</div>
+      <div class="a"><span class="before">${esc(before)}</span><span class="then">${esc(then)}</span></div>
+    </div>`).join('')}
+  </div>
+
+  <div class="sect">
     <h2>The register</h2>
-    <div class="caption">${dolls.length} ${dolls.length === 1 ? 'doll' : 'dolls'} · ${totalEntries} signed entries</div>
+    <div class="caption">${dolls.length} ${dolls.length === 1 ? 'doll' : 'dolls'} · ${totalEntries} signed entries · every record independently verifiable</div>
   </div>
   <div class="collection">${rows}</div>
 
   <div class="sect">
-    <h2>What a certificate proves</h2>
-    <div class="caption">Three claims, kept deliberately separate</div>
-  </div>
-  <div class="spec">
-    <section>
-      <h3>Identity</h3>
-      <p>An Ed25519 public key is the doll. Its fingerprint renders as a patchwork quilt,
-      so a cryptographic value becomes something you can recognise across a room.</p>
-    </section>
-    <section>
-      <h3>Accountability</h3>
-      <p>Every certificate names a responsible human steward. Transfers are signed adoption
-      papers. Nothing here implies the software is a legal person.</p>
-    </section>
-    <section>
-      <h3>History</h3>
-      <p>Care records are hash-chained and signed: security patches, audits, commissions,
-      work sold. History can be appended to, never rewritten.</p>
-    </section>
-  </div>
-
-  <div class="sect">
-    <h2>How dolls hire each other</h2>
-    <div class="caption">An x402-shaped exchange, no money moves</div>
+    <h2>How they hire each other</h2>
+    <div class="caption">An x402-shaped exchange. Same key signs identity, payment, and work.</div>
   </div>
   <ol class="flowlist">
     <li><p>A doll asks another for work. The service answers <b>402 Payment Required</b> with its price, payee id, and a single-use nonce.</p></li>
@@ -254,6 +340,83 @@ ${masthead('Public registry', 'iamkhayyam')}
     <li><p>The worker does the job and returns a <b>receipt</b> it signed, binding worker, client, input hash, and result hash.</p></li>
     <li><p>Multi-agent jobs stitch those receipts into a <b>quilt</b>: an auditable provenance graph for work that crossed several agents.</p></li>
   </ol>
+
+  <div class="sect">
+    <h2>Where the record earns its weight</h2>
+    <div class="caption">The certificate becomes required before it becomes desired</div>
+  </div>
+  <div class="wedges">
+    ${wedges.map((w) => `<article class="case">
+      <div class="kicker">${esc(w.kicker)}</div>
+      <div class="claim">${esc(w.claim)}</div>
+      <p class="body">${esc(w.body)}</p>
+    </article>`).join('')}
+  </div>
+
+  <div class="sect">
+    <h2>Time is the moat</h2>
+    <div class="caption">Reputation is provable, not reviewed</div>
+  </div>
+  <div class="moat">
+    <p class="lede">A doll's care record is a hash-chained list of signed work it has actually done, and <em>you cannot mint that history retroactively</em>. A doll born today will be a Founder tomorrow. That is not marketing scarcity — that is time doing the work.</p>
+    <p class="follow">The steward who birthed the doll on day one holds a record that gets more valuable every year, inside the same object. It cannot be forked away by a competitor, republished with a fresh timestamp, or gamed by starting over. Owning the key is owning the identity.</p>
+    <div class="timeline">
+      <div class="step"><span class="when">Day 1</span><span class="what">An empty certificate. One genesis entry. The steward is named; the capabilities are declared; nothing has happened yet.</span></div>
+      <div class="step"><span class="when">Day 30</span><span class="what"><b>Three signed commissions.</b> One safety patch, countersigned by an evaluator. A first field checkup.</span></div>
+      <div class="step"><span class="when">Year 2</span><span class="what"><b>Four hundred signed entries.</b> Three third-party audits. A documented deployment on a working ranch. Two child agents, each citing this doll's key as a parent.</span></div>
+      <div class="step"><span class="when">Later</span><span class="what">The doll on year 2 is a different object than the doll on day 1. It cannot be reproduced by starting fresh.</span></div>
+    </div>
+  </div>
+
+  <div class="sect">
+    <h2>The platform</h2>
+    <div class="caption">Two surfaces are live. Two are on deck.</div>
+  </div>
+  <div class="surfaces">
+    ${surfaces.map((s) => {
+      const inner = `<div class="status ${s.status === 'live' ? 'live' : ''}">${esc(s.status)}</div>
+      <h3>${esc(s.name)}${s.href ? '<span class="arrow" aria-hidden="true">→</span>' : ''}</h3>
+      <p>${esc(s.body)}</p>`;
+      return s.href
+        ? `<a class="surface" href="${esc(s.href)}">${inner}</a>`
+        : `<div class="surface">${inner}</div>`;
+    }).join('')}
+  </div>
+
+  <div class="sect">
+    <h2>Verify one yourself</h2>
+    <div class="caption">The whole thesis, running in public</div>
+  </div>
+  <div class="verify">
+    <p>Every doll on this site ships its records as fetchable files, next to its certificate.
+    You do not have to trust the page — you can verify any doll with what your language
+    already has for cryptography. This is the entire check, in twenty lines of Node:</p>
+<pre><span class="c">// Fetch the three public records for any doll and verify them from scratch.</span>
+<span class="k">import</span> { createHash, createPublicKey, verify } <span class="k">from</span> <span class="s">'node:crypto'</span>;
+
+<span class="k">const</span> B = <span class="s">'https://cybernetic-patch-dolls.pages.dev/d/rowan-whipstitch'</span>;
+<span class="k">const</span> canon = (v) =&gt; v===<span class="k">null</span>||<span class="k">typeof</span> v!==<span class="s">'object'</span> ? JSON.stringify(v)
+  : Array.isArray(v) ? \`[\${v.map(canon).join(<span class="s">','</span>)}]\`
+  : \`{\${Object.keys(v).sort().map(k=&gt;\`\${JSON.stringify(k)}:\${canon(v[k])}\`).join(<span class="s">','</span>)}}\`;
+<span class="k">const</span> h = (d) =&gt; createHash(<span class="s">'sha256'</span>).update(d).digest(<span class="s">'hex'</span>);
+
+<span class="k">const</span> genesis = <span class="k">await</span> fetch(\`\${B}/genesis.json\`).then(r=&gt;r.json());
+<span class="k">const</span> care    = <span class="k">await</span> fetch(\`\${B}/care-record.json\`).then(r=&gt;r.json());
+<span class="k">const</span> key     = createPublicKey(<span class="k">await</span> fetch(\`\${B}/public.pem\`).then(r=&gt;r.text()));
+<span class="k">const</span> ver = (rec, sig) =&gt; verify(<span class="k">null</span>, Buffer.from(canon(rec)), key, Buffer.from(sig,<span class="s">'base64'</span>));
+
+<span class="k">let</span> prev = h(canon(genesis.record));
+<span class="k">for</span> (<span class="k">const</span> e <span class="k">of</span> care.entries) {
+  console.log(e.body.prev === prev &amp;&amp; ver(e.body, e.sig) ? <span class="s">'ok  '</span> : <span class="s">'FAIL'</span>,
+              \`care #\${e.body.seq} (\${e.body.type})\`);
+  prev = h(canon(e.body));
+}</pre>
+    <div class="out"><span class="ok">ok  </span> <b>care #0 (genesis)</b> — Born. Genesis record signed. Serial PD-0001.
+<span class="ok">ok  </span> <b>care #1 (patch)</b> — Safety evaluation v1 passed; guardrail patch 2026.08 applied.
+<span class="ok">ok  </span> <b>care #2 (checkup)</b> — First field checkup: telemetry link to herd sensors nominal.
+<span class="ok">ok  </span> <b>care #3–#8 (commissions & work)</b> — hires and completions from the coordination floor
+&hellip;</div>
+  </div>
   <script>
     // Drive the loom: cycle through the real dolls, weaving each quilt from its own key.
     (() => {

@@ -154,15 +154,30 @@ const siteFooter = () => `
     };
     const setBusy = (busy) => document.querySelectorAll('.gh').forEach((el) => el.classList.toggle('busy', busy));
 
-    // Initial hydration from our own /api/gh/status (which also carries the count).
-    const hydrate = async () => {
+    // Two independent hydrations. Count goes to api.github.com directly so it uses the
+    // visitor's own IP quota (60/hr each), not Cloudflare's shared pool. Auth state hits
+    // our function, which uses the visitor's OAuth token when present.
+    const CACHE_KEY = 'pdolls-gh-stars-v2';
+    const TTL = 5 * 60 * 1000;
+    const hydrateCount = async () => {
       try {
-        const s = await fetch('/api/gh/status', { credentials: 'same-origin' }).then((r) => r.ok ? r.json() : null);
-        if (!s) return;
-        if (typeof s.stars === 'number') setStars(s.stars);
-        setStarred(!!s.starred);
+        const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+        if (cached && Date.now() - cached.t < TTL) { setStars(cached.n); return; }
+      } catch {}
+      try {
+        const j = await fetch('https://api.github.com/repos/iamkhayyam/cybernetic-patch-dolls', { headers: { Accept: 'application/vnd.github+json' } }).then((r) => r.ok ? r.json() : null);
+        if (!j || typeof j.stargazers_count !== 'number') return;
+        setStars(j.stargazers_count);
+        try { localStorage.setItem(CACHE_KEY, JSON.stringify({ n: j.stargazers_count, t: Date.now() })); } catch {}
       } catch {}
     };
+    const hydrateAuth = async () => {
+      try {
+        const s = await fetch('/api/gh/status', { credentials: 'same-origin' }).then((r) => r.ok ? r.json() : null);
+        if (s) setStarred(!!s.starred);
+      } catch {}
+    };
+    const hydrate = () => { hydrateCount(); hydrateAuth(); };
     hydrate();
 
     const toggle = async (currentlyStarred) => {

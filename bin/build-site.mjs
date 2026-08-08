@@ -55,13 +55,14 @@ ${FONTS}`;
 // Inline SVGs (self-contained; the CSP blocks external assets). GitHub octomark trimmed
 // to path data; star is a hollow outline to read as "action available" rather than "done".
 const GH_ICON = `<svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>`;
-const STAR_ICON_EMPTY = `<svg class="s-empty" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M8 1.5l2 4 4.4.5-3.3 3 .9 4.5L8 11.2 4 13.5l.9-4.5L1.6 6l4.4-.5L8 1.5z"/></svg>`;
-const STAR_ICON_FULL = `<svg class="s-full" viewBox="0 0 16 16" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M8 0.5l2.2 4.5 4.9.7-3.6 3.5 1 4.9L8 11.7l-4.4 2.4 1-4.9L1 5.7l4.9-.7z"/></svg>`;
+const STAR_ICON = `<svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M8 1.5l2 4 4.4.5-3.3 3 .9 4.5L8 11.2 4 13.5l.9-4.5L1.6 6l4.4-.5L8 1.5z"/></svg>`;
 
-// The badge is now a real action: click → OAuth popup on first use, then inline star.
-// The href stays as a graceful fallback for no-JS visitors (goes to the repo page).
-const ghBadge = () => `<a class="gh" href="${REPO}" data-gh-star aria-label="Star this project on GitHub">
-  <span class="lhs">${GH_ICON}${STAR_ICON_EMPTY}${STAR_ICON_FULL}<span class="txt" data-star-label>Star</span></span>
+// Shields-style star badge: opens the repo in a new tab, GitHub handles the star. Real
+// inline OAuth starring exists in git history (it worked) but was worse UX than a plain
+// link — GitHub's sudo-mode verification on first public_repo grant costs more clicks
+// than just opening the repo and hitting the star button in the native UI.
+const ghBadge = () => `<a class="gh" href="${REPO}" target="_blank" rel="noopener" aria-label="Star this project on GitHub">
+  <span class="lhs">${GH_ICON}${STAR_ICON}<span class="txt">Star</span></span>
   <span class="n" data-star>—</span>
 </a>`;
 
@@ -108,13 +109,6 @@ const SITE_CSS = `
   .gh .n { display: inline-flex; align-items: center; padding: 8px 12px; border-left: 1px solid oklch(0.42 0.014 62); background: oklch(0.2 0.010 62); font-family: var(--mono); font-size: var(--t-data); font-variant-numeric: tabular-nums; min-width: 3ch; justify-content: center; color: var(--plate); letter-spacing: -0.01em; }
   .gh.pulse .n { animation: gh-tick 400ms var(--ease); }
   @keyframes gh-tick { from { background: var(--stamp) } to { background: oklch(0.2 0.010 62) } }
-  /* Starred state: the hollow star becomes filled, the "Star" label becomes "Starred",
-     and the left cell picks up an amber wash to make the state legible at a glance. */
-  .gh .s-full { display: none; }
-  .gh.starred .s-empty { display: none; }
-  .gh.starred .s-full { display: inline; color: oklch(0.78 0.16 82); }
-  .gh.starred .lhs { background: oklch(0.30 0.03 65); }
-  .gh.busy { opacity: 0.7; pointer-events: none; }
   @media (prefers-reduced-motion: reduce) { .gh.pulse .n { animation: none; } }
   footer.site { border-top: 1px solid var(--rule-strong); margin-top: 72px; padding: 28px 0 96px; }
   footer.site p { max-width: 62ch; color: var(--graphite); }
@@ -132,102 +126,34 @@ const siteFooter = () => `
   </div>
 </div></footer>
 <script>
-  // GitHub star badge driver — real starring via our OAuth Pages Functions.
-  // First click on an unauthenticated browser opens a popup to /api/gh/authorize; when it
-  // posts back we finish the star inline. Repeat clicks toggle without a popup.
-  // Falls back to plain-link behaviour if JS is off or the API is unreachable.
+  // Live star count fetched from GitHub, per-visitor IP (60/hr each), cached in
+  // localStorage for 5 minutes. Fails silent — badge stays visible with a dash.
   (() => {
-    const setStars = (n, opts = {}) => {
+    const CACHE_KEY = 'pdolls-gh-stars-v2';
+    const TTL = 5 * 60 * 1000;
+    const set = (n) => {
       document.querySelectorAll('[data-star]').forEach((el) => {
         const prev = el.textContent;
-        if (typeof n === 'number') el.textContent = String(n);
-        if (opts.pulse && prev !== String(n) && prev !== '—') {
+        el.textContent = String(n);
+        if (prev !== String(n) && prev !== '—') {
           const gh = el.closest('.gh');
           gh?.classList.add('pulse');
           setTimeout(() => gh?.classList.remove('pulse'), 500);
         }
       });
     };
-    const setStarred = (starred) => {
-      document.querySelectorAll('.gh').forEach((el) => el.classList.toggle('starred', !!starred));
-      document.querySelectorAll('[data-star-label]').forEach((el) => { el.textContent = starred ? 'Starred' : 'Star'; });
-    };
-    const setBusy = (busy) => document.querySelectorAll('.gh').forEach((el) => el.classList.toggle('busy', busy));
-
-    // Two independent hydrations. Count goes to api.github.com directly so it uses the
-    // visitor's own IP quota (60/hr each), not Cloudflare's shared pool. Auth state hits
-    // our function, which uses the visitor's OAuth token when present.
-    const CACHE_KEY = 'pdolls-gh-stars-v2';
-    const TTL = 5 * 60 * 1000;
-    const hydrateCount = async () => {
-      try {
-        const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
-        if (cached && Date.now() - cached.t < TTL) { setStars(cached.n); return; }
-      } catch {}
-      try {
-        const j = await fetch('https://api.github.com/repos/iamkhayyam/cybernetic-patch-dolls', { headers: { Accept: 'application/vnd.github+json' } }).then((r) => r.ok ? r.json() : null);
+    try {
+      const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+      if (cached && Date.now() - cached.t < TTL) { set(cached.n); return; }
+    } catch {}
+    fetch('https://api.github.com/repos/iamkhayyam/cybernetic-patch-dolls', { headers: { Accept: 'application/vnd.github+json' } })
+      .then((r) => r.ok ? r.json() : null)
+      .then((j) => {
         if (!j || typeof j.stargazers_count !== 'number') return;
-        setStars(j.stargazers_count);
+        set(j.stargazers_count);
         try { localStorage.setItem(CACHE_KEY, JSON.stringify({ n: j.stargazers_count, t: Date.now() })); } catch {}
-      } catch {}
-    };
-    const hydrateAuth = async () => {
-      try {
-        const s = await fetch('/api/gh/status', { credentials: 'same-origin' }).then((r) => r.ok ? r.json() : null);
-        if (s) setStarred(!!s.starred);
-      } catch {}
-    };
-    const hydrate = () => { hydrateCount(); hydrateAuth(); };
-    hydrate();
-
-    const toggle = async (currentlyStarred) => {
-      setBusy(true);
-      try {
-        const res = await fetch('/api/gh/star', {
-          method: currentlyStarred ? 'DELETE' : 'POST',
-          credentials: 'same-origin',
-        });
-        if (res.status === 401) return { needsAuth: true };
-        if (!res.ok) return { error: true };
-        const data = await res.json();
-        if (typeof data.stars === 'number') setStars(data.stars, { pulse: true });
-        setStarred(!!data.starred);
-        return { ok: true };
-      } finally { setBusy(false); }
-    };
-
-    const openAuth = () => new Promise((resolve) => {
-      const w = 720, h = 720;
-      const y = window.screenY + Math.max(0, (window.outerHeight - h) / 2);
-      const x = window.screenX + Math.max(0, (window.outerWidth - w) / 2);
-      const popup = window.open('/api/gh/authorize', 'gh-oauth', \`width=\${w},height=\${h},left=\${x},top=\${y}\`);
-      if (!popup) return resolve({ blocked: true });
-      const listener = (ev) => {
-        if (ev.origin !== location.origin) return;
-        if (ev.data && ev.data.source === 'gh-oauth') {
-          window.removeEventListener('message', listener);
-          resolve({ ok: !!ev.data.ok });
-        }
-      };
-      window.addEventListener('message', listener);
-      const poll = setInterval(() => {
-        if (popup.closed) { clearInterval(poll); window.removeEventListener('message', listener); resolve({ closed: true }); }
-      }, 500);
-    });
-
-    document.querySelectorAll('[data-gh-star]').forEach((el) => {
-      el.addEventListener('click', async (e) => {
-        e.preventDefault();
-        const currentlyStarred = el.classList.contains('starred');
-        let result = await toggle(currentlyStarred);
-        if (result?.needsAuth) {
-          const auth = await openAuth();
-          if (auth?.blocked) { window.open(el.href, '_blank', 'noopener'); return; }
-          if (auth?.ok) { await toggle(false); }
-          else if (auth?.closed) { await hydrate(); }
-        }
-      });
-    });
+      })
+      .catch(() => {});
   })();
 </script>`;
 

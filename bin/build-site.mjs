@@ -52,24 +52,35 @@ const head = (title, desc) => `<!doctype html>
 <meta property="og:type" content="website">
 ${FONTS}`;
 
-// The right side is documentary metadata about the page, not a session indicator.
-// Anything person-shaped in the top-right corner is read as "logged in as X" — do not put
-// a bare handle there. Use the `link` form to make it an unambiguous nav element (source
-// repo, section, etc.) with an underline that says "click me", not "you".
-const masthead = (right1, right2, opts = {}) => {
-  const { href = '/', link = null } = opts;
-  const right = link
-    ? `<a class="mast-link" href="${esc(link)}">${esc(right2)}</a>`
-    : `<span class="serial">${esc(right2)}</span>`;
+// Inline SVGs (self-contained; the CSP blocks external assets). GitHub octomark trimmed
+// to path data; star is a hollow outline to read as "action available" rather than "done".
+const GH_ICON = `<svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>`;
+const STAR_ICON = `<svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M8 1.5l2 4 4.4.5-3.3 3 .9 4.5L8 11.2 4 13.5l.9-4.5L1.6 6l4.4-.5L8 1.5z"/></svg>`;
+
+const ghBadge = () => `<a class="gh" href="${REPO}" target="_blank" rel="noopener" aria-label="Star this project on GitHub">
+  <span class="lhs">${GH_ICON}${STAR_ICON}<span class="txt">Star</span></span>
+  <span class="n" data-star>—</span>
+</a>`;
+
+// Right of the masthead: an optional page-label pair (label + subject), then the GitHub
+// badge, always. The badge is the only person-shaped thing in the corner — but a repo path
+// with a hollow star cannot be mistaken for a session, because it names a repository, not
+// a viewer.
+const masthead = (opts = {}) => {
+  const { label = null, subject = null, href = '/' } = opts;
+  const pageLabel = label ? `<div class="mast-label">
+    <div class="doc">${esc(label)}</div>
+    ${subject ? `<div class="serial">${esc(subject)}</div>` : ''}
+  </div>` : '';
   return `
 <div class="masthead">
-  <a href="${href}" style="text-decoration:none">
+  <a class="mast-title" href="${href}">
     <div class="registry">The Cybernetic Patch Dolls</div>
     <div class="doc">Registry of agent identities</div>
   </a>
-  <div style="text-align:right">
-    <div class="doc">${esc(right1)}</div>
-    ${right}
+  <div class="mast-right">
+    ${pageLabel}
+    ${ghBadge()}
   </div>
 </div>`;
 };
@@ -77,10 +88,24 @@ const masthead = (right1, right2, opts = {}) => {
 const SITE_CSS = `
   a.plain { text-decoration: none; color: inherit; }
   a.u { color: var(--stamp-ink); text-underline-offset: 3px; text-decoration-thickness: 1px; }
-  /* Masthead nav link — mono like a repository path, underlined so nobody mistakes it for
-     an account handle. */
-  .masthead .mast-link { font-family: var(--mono); font-size: var(--t-data); color: var(--plate); letter-spacing: -0.005em; text-decoration: underline; text-decoration-color: oklch(0.72 0.008 70 / 0.5); text-underline-offset: 3px; }
-  .masthead .mast-link:hover { text-decoration-color: var(--stamp); }
+
+  /* Masthead right cluster: optional page label + the GitHub star badge. */
+  .masthead .mast-title { text-decoration: none; color: inherit; }
+  .masthead .mast-right { display: flex; align-items: center; gap: clamp(14px, 2vw, 24px); flex-wrap: wrap; justify-content: flex-end; }
+  .masthead .mast-label { text-align: right; }
+
+  /* GitHub star badge, shields.io-shaped, matching the masthead ink theme. Left half is a
+     dark button (github + hollow star + "STAR"); right half a slightly darker cell with the
+     tabular count. Border turns stamp red on hover. */
+  .gh { display: inline-flex; align-items: stretch; border: 1px solid oklch(0.42 0.014 62); text-decoration: none; color: var(--plate); font-family: var(--sans); overflow: hidden; transition: border-color 140ms var(--ease); line-height: 1; }
+  .gh:hover { border-color: var(--stamp); }
+  .gh .lhs { display: inline-flex; align-items: center; gap: 7px; padding: 8px 11px 8px 10px; background: oklch(0.26 0.012 62); }
+  .gh .lhs svg { flex-shrink: 0; }
+  .gh .lhs .txt { font-size: var(--t-micro); font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; margin-left: 2px; }
+  .gh .n { display: inline-flex; align-items: center; padding: 8px 12px; border-left: 1px solid oklch(0.42 0.014 62); background: oklch(0.2 0.010 62); font-family: var(--mono); font-size: var(--t-data); font-variant-numeric: tabular-nums; min-width: 3ch; justify-content: center; color: var(--plate); letter-spacing: -0.01em; }
+  .gh.pulse .n { animation: gh-tick 400ms var(--ease); }
+  @keyframes gh-tick { from { background: var(--stamp) } to { background: oklch(0.2 0.010 62) } }
+  @media (prefers-reduced-motion: reduce) { .gh.pulse .n { animation: none; } }
   footer.site { border-top: 1px solid var(--rule-strong); margin-top: 72px; padding: 28px 0 96px; }
   footer.site p { max-width: 62ch; color: var(--graphite); }
   footer.site .links { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 16px; font-size: var(--t-label); font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
@@ -95,7 +120,34 @@ const siteFooter = () => `
     <a class="u" href="/bee/">Coordination floor</a>
     <a class="u" href="${REPO}">Source</a>
   </div>
-</div></footer>`;
+</div></footer>
+<script>
+  // Live GitHub star count. Cached in localStorage for 5 minutes so we don't burn the
+  // 60/hr unauthenticated rate limit per IP for repeat visitors. Fails silent — the badge
+  // stays visible with a dash if the API is unreachable.
+  (() => {
+    const CACHE_KEY = 'pdolls-gh-stars-v1';
+    const TTL = 5 * 60 * 1000;
+    const set = (n) => {
+      document.querySelectorAll('[data-star]').forEach((el) => {
+        const prev = el.textContent;
+        el.textContent = n;
+        if (prev !== String(n) && prev !== '—') el.closest('.gh')?.classList.add('pulse');
+      });
+    };
+    let cached = null;
+    try { cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null'); } catch {}
+    if (cached && Date.now() - cached.t < TTL) { set(cached.n); return; }
+    fetch('https://api.github.com/repos/iamkhayyam/cybernetic-patch-dolls', { headers: { Accept: 'application/vnd.github+json' } })
+      .then((r) => r.ok ? r.json() : null)
+      .then((j) => {
+        if (!j || typeof j.stargazers_count !== 'number') return;
+        set(j.stargazers_count);
+        try { localStorage.setItem(CACHE_KEY, JSON.stringify({ n: j.stargazers_count, t: Date.now() })); } catch {}
+      })
+      .catch(() => {});
+  })();
+</script>`;
 
 // ---------- landing ----------
 
@@ -297,7 +349,7 @@ ${SITE_CSS}
   .verify .out .ok { color: var(--stamp-ink); font-weight: 600; }
   .verify .out b { color: var(--ink); font-weight: 600; }
 </style>
-${masthead('Source', 'iamkhayyam/cybernetic-patch-dolls', { link: REPO })}
+${masthead()}
 <div class="wrap">
   ${marks()}
   <div class="hero">
@@ -509,7 +561,7 @@ ${SITE_CSS}
   .note b { color: var(--ink); font-weight: 600; }
   .reg-row:hover { background: var(--plate); }
 </style>
-${masthead('Coordination floor', 'The Quilting Bee')}
+${masthead({ label: 'Coordination floor', subject: 'The Quilting Bee' })}
 <div class="wrap">
   ${marks()}
   <div class="strip">
@@ -561,7 +613,7 @@ ${SITE_CSS}
   .lost p { margin-top: 22px; max-width: 54ch; font-size: var(--t-lead); color: var(--ink-2); }
   .lost .links { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 28px; font-size: var(--t-label); font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
 </style>
-${masthead('Public registry', 'Not found')}
+${masthead({ label: 'Public registry', subject: 'Not found' })}
 <div class="wrap">
   ${marks()}
   <div class="lost">
